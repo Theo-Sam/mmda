@@ -1,0 +1,99 @@
+MMDA Project: Role Permissions Checklist
+========================================
+
+INSTRUCTIONS:
+- For each role, log in as a user with that role and check ONLY the actions/pages listed.
+- Mark [X] if the action is accessible, [ ] if not.
+- Ensure no extra actions are accessible.
+
+
+-----------------------------
+SUPER ADMIN
+-----------------------------
+[ ] Access and manage all users and roles
+[ ] Create, edit, deactivate, and view all MMDAs
+[ ] Manage all businesses
+[ ] Manage all revenue types
+[ ] Manage all collector assignments
+[ ] Manage all collections and payments
+[ ] View and export all reports
+[ ] View all audit logs and flag irregularities
+[ ] Send notifications
+[ ] Access all dashboards and settings
+
+-----------------------------
+REGIONAL ADMIN
+-----------------------------
+[ ] Manage users and roles in their region
+[ ] Edit/deactivate/view MMDAs in their region
+[ ] Manage businesses in their region
+[ ] Manage revenue types in their region
+[ ] Manage collector assignments in their region
+[ ] Validate/view collections in their region
+[ ] View/export reports and collector performance in their region
+[ ] View/search audit logs in their region
+[ ] Access own profile and settings
+
+-----------------------------
+MMDA ADMIN
+-----------------------------
+[ ] Manage users and roles in their MMDA
+[ ] Edit/view MMDA details
+[ ] Manage businesses in their MMDA
+[ ] Manage revenue types in their MMDA
+[ ] Manage collector assignments in their MMDA
+[ ] Validate/view collections in their MMDA
+[ ] View/export reports and collector performance in their MMDA
+[ ] View/search audit logs in their MMDA
+[ ] Access own profile and settings
+
+-----------------------------
+FINANCE OFFICER
+-----------------------------
+[ ] View users and businesses in their MMDA
+[ ] Manage revenue types in their MMDA
+[ ] Validate/view collections in their MMDA
+[ ] View/export reports and collector performance in their MMDA
+[ ] View/search audit logs in their MMDA
+[ ] Access own profile and settings
+
+-----------------------------
+COLLECTOR
+-----------------------------
+[ ] View businesses and own assignments
+[ ] Record/edit/view own collections
+[ ] Generate receipts
+[ ] Access own profile and settings
+
+-----------------------------
+BUSINESS REGISTRATION OFFICER
+-----------------------------
+[ ] Register/edit/view businesses in their MMDA
+[ ] View revenue types and reports in their MMDA
+[ ] Access own profile and settings
+
+-----------------------------
+AUDITOR
+-----------------------------
+[ ] View businesses, revenue types, assignments, collections
+[ ] View/export reports and collector performance
+[ ] View/search/flag audit logs
+[ ] Access own profile and settings
+
+-----------------------------
+MONITORING BODY
+-----------------------------
+[ ] View all MMDAs, businesses, revenue types, assignments, collections
+[ ] View/export reports and collector performance
+[ ] View/search audit logs
+[ ] Access own profile and settings
+
+-----------------------------
+BUSINESS OWNER
+-----------------------------
+[ ] View own business and payments
+[ ] Make payments and generate receipts
+[ ] Access own profile and settings
+
+========================================
+End of Checklist 

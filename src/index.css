@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Custom styles for dark mode transitions */
+.dark {
+  color-scheme: dark;
+}
+
+/* Apply transitions to specific properties instead of all */
+html, body, div, span, p, h1, h2, h3, h4, h5, h6, 
+button, input, select, textarea, a, table, tr, td, th {
+  @apply transition-colors duration-200;
+}
+
+/* Recharts dark mode adjustments */
+.dark .recharts-cartesian-grid-horizontal line,
+.dark .recharts-cartesian-grid-vertical line {
+  @apply stroke-gray-700;
+}
+
+.dark .recharts-text {
+  @apply fill-gray-400;
+}
+
+.dark .recharts-tooltip-wrapper {
+  @apply bg-gray-800 text-gray-100 !important;
+}
+
+.dark .recharts-default-tooltip {
+  @apply bg-gray-800 border-gray-700 text-gray-100 !important;
+}
+
+.dark .recharts-surface {
+  @apply !important;
+}
+
+/* Fix for recharts in dark mode */
+.dark .recharts-layer {
+  @apply !important;
+}
+
+/* Ensure proper contrast for chart elements in dark mode */
+.dark .recharts-active-dot {
+  @apply fill-blue-400;
+}
+
+.dark .recharts-bar-rectangle {
+  @apply fill-blue-500;
+}
+
+.dark .recharts-tooltip-cursor {
+  @apply fill-gray-700 opacity-50;
+}
+
+/* Ensure modal backdrops work properly in dark mode */
+.modal-backdrop {
+  @apply bg-black bg-opacity-50 dark:bg-opacity-70;
+}
+
+/* Ensure proper focus styles in dark mode */
+.dark *:focus-visible {
+  @apply outline-blue-500;
+}
+
+/* Ensure proper selection styles in dark mode */
+.dark ::selection {
+  @apply bg-blue-700 text-white;
+}
+
+/* Custom CSS variables for theme colors */
+:root {
+  --color-primary-50: 239 246 255;
+  --color-primary-100: 219 234 254;
+  --color-primary-200: 191 219 254;
+  --color-primary-300: 147 197 253;
+  --color-primary-400: 96 165 250;
+  --color-primary-500: 59 130 246;
+  --color-primary-600: 37 99 235;
+  --color-primary-700: 29 78 216;
+  --color-primary-800: 30 64 175;
+  --color-primary-900: 30 58 138;
+}
+
+.dark {
+  --color-primary-50: 30 58 138;
+  --color-primary-100: 30 64 175;
+  --color-primary-200: 29 78 216;
+  --color-primary-300: 37 99 235;
+  --color-primary-400: 59 130 246;
+  --color-primary-500: 96 165 250;
+  --color-primary-600: 147 197 253;
+  --color-primary-700: 191 219 254;
+  --color-primary-800: 219 234 254;
+  --color-primary-900: 239 246 255;
+}
