@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  BarChart3, 
-  Download, 
-  Filter, 
-  Search, 
-  Eye, 
-  TrendingUp, 
+import {
+  BarChart3,
+  Download,
+  Filter,
+  Search,
+  Eye,
+  TrendingUp,
   TrendingDown,
   MapPin,
   Building2,
@@ -15,7 +15,8 @@ import {
   Calendar,
   FileText,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Target
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { ghanaRegions, mmdaByRegion } from '../../utils/ghanaRegions';
@@ -50,7 +51,7 @@ export default function MMDAReports() {
   const districtMMDAs = user ? filterByJurisdiction(user, mmdas, 'name') : mmdas;
   const filteredMMDAs = districtMMDAs.filter(mmda => {
     const matchesSearch = mmda.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         mmda.code.toLowerCase().includes(searchTerm.toLowerCase());
+      mmda.code.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRegion = filterRegion === 'all' || mmda.region === filterRegion;
     const matchesStatus = filterStatus === 'all' || mmda.status === filterStatus;
     return matchesSearch && matchesRegion && matchesStatus;
@@ -185,19 +186,19 @@ export default function MMDAReports() {
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={[]}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
-            <XAxis 
-              dataKey="month" 
+            <XAxis
+              dataKey="month"
               tick={{ fill: theme === 'dark' ? '#9CA3AF' : '#4B5563' }}
               axisLine={{ stroke: theme === 'dark' ? '#374151' : '#E5E7EB' }}
             />
-            <YAxis 
-              tickFormatter={(value) => `${value / 1000000}M`} 
+            <YAxis
+              tickFormatter={(value) => `${value / 1000000}M`}
               tick={{ fill: theme === 'dark' ? '#9CA3AF' : '#4B5563' }}
               axisLine={{ stroke: theme === 'dark' ? '#374151' : '#E5E7EB' }}
             />
-            <Tooltip 
+            <Tooltip
               formatter={(value) => [formatCurrency(value as number), '']}
-              contentStyle={{ 
+              contentStyle={{
                 backgroundColor: theme === 'dark' ? '#1F2937' : '#FFFFFF',
                 borderColor: theme === 'dark' ? '#374151' : '#E5E7EB',
                 color: theme === 'dark' ? '#F9FAFB' : '#111827'
@@ -303,10 +304,9 @@ export default function MMDAReports() {
                         Target: {formatCurrency(mmda.target)}
                       </div>
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            mmda.revenue >= mmda.target ? 'bg-green-600 dark:bg-green-500' : 'bg-yellow-600 dark:bg-yellow-500'
-                          }`}
+                        <div
+                          className={`h-2 rounded-full ${mmda.revenue >= mmda.target ? 'bg-green-600 dark:bg-green-500' : 'bg-yellow-600 dark:bg-yellow-500'
+                            }`}
                           style={{ width: `${Math.min((mmda.revenue / mmda.target) * 100, 100)}%` }}
                         ></div>
                       </div>
@@ -322,11 +322,10 @@ export default function MMDAReports() {
                     <div className="flex items-center space-x-2">
                       <span className="text-sm text-gray-900 dark:text-white">{mmda.compliance}%</span>
                       <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            mmda.compliance >= 95 ? 'bg-green-600 dark:bg-green-500' :
+                        <div
+                          className={`h-2 rounded-full ${mmda.compliance >= 95 ? 'bg-green-600 dark:bg-green-500' :
                             mmda.compliance >= 85 ? 'bg-yellow-600 dark:bg-yellow-500' : 'bg-red-600 dark:bg-red-500'
-                          }`}
+                            }`}
                           style={{ width: `${mmda.compliance}%` }}
                         ></div>
                       </div>
@@ -339,9 +338,8 @@ export default function MMDAReports() {
                       ) : (
                         <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400" />
                       )}
-                      <span className={`text-sm font-medium ${
-                        mmda.growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                      }`}>
+                      <span className={`text-sm font-medium ${mmda.growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                        }`}>
                         {mmda.growth >= 0 ? '+' : ''}{mmda.growth}%
                       </span>
                     </div>
@@ -392,7 +390,7 @@ export default function MMDAReports() {
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-6">
               {/* Basic Info */}
               <div className="grid grid-cols-2 gap-4">
@@ -478,6 +476,113 @@ export default function MMDAReports() {
                   className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600"
                 >
                   Export MMDA Report
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Collector Performance Section */}
+      {user?.role === 'monitoring_body' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Collector Performance & Analytics</h3>
+            <p className="text-gray-600 dark:text-gray-400">Monitor collector performance across all MMDAs</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Performance Overview</h4>
+                  <Target className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">View national collector performance metrics</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  View Performance
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Efficiency Analysis</h4>
+                  <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">Analyze collection efficiency and trends</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  View Analysis
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Comparative Report</h4>
+                  <BarChart3 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Compare collector performance across MMDAs</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  Generate Report
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Reports & Data Export Section */}
+      {user?.role === 'monitoring_body' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">National Reports & Data Exports</h3>
+            <p className="text-gray-600 dark:text-gray-400">Generate comprehensive reports and export data for analysis</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Revenue Reports</h4>
+                  <DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">National revenue summary and trends</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  <Download className="w-4 h-4 inline mr-1" />
+                  Export PDF
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Performance Data</h4>
+                  <Target className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">MMDA and collector performance data</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  <Download className="w-4 h-4 inline mr-1" />
+                  Export Excel
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Compliance Reports</h4>
+                  <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Compliance and audit findings</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  <Download className="w-4 h-4 inline mr-1" />
+                  Export PDF
+                </button>
+              </div>
+
+              <div className="p-4 bg-orange-50 dark:bg-orange-900/30 rounded-lg border border-orange-200 dark:border-orange-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-orange-900 dark:text-orange-100">Custom Reports</h4>
+                  <FileText className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                <p className="text-sm text-orange-800 dark:text-orange-200 mb-3">Generate custom analytical reports</p>
+                <button className="w-full px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm">
+                  <Download className="w-4 h-4 inline mr-1" />
+                  Custom Export
                 </button>
               </div>
             </div>

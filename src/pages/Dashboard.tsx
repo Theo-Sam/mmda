@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  DollarSign, 
-  Building2, 
-  Users, 
+import {
+  DollarSign,
+  Building2,
+  Users,
   FileText,
   TrendingUp,
   Plus,
@@ -52,7 +52,7 @@ export default function Dashboard() {
           subtitle: 'Monitor all MMDAs across Ghana',
           stats: [
             { title: 'Total Revenue (National)', value: formatCurrency(dashboardStats.totalRevenue * 16), icon: DollarSign, color: 'green' as const },
-            { title: 'Active MMDAs', value: '260', icon: Globe, color: 'blue' as const },
+            { title: 'Registered MMDAs', value: '260', icon: Globe, color: 'blue' as const },
             { title: 'Total Users', value: '1,247', icon: Users, color: 'yellow' as const },
             { title: 'System Uptime', value: '99.8%', icon: Shield, color: 'red' as const },
           ],
@@ -67,10 +67,10 @@ export default function Dashboard() {
       case 'mmda_admin': {
         const districtBusinesses = businesses.filter(b => b.status === 'active').length;
         const districtRevenue = collections.reduce((sum, c) => sum + c.amount, 0);
-        const todaysCollections = collections.filter(c => 
+        const todaysCollections = collections.filter(c =>
           new Date(c.date).toDateString() === new Date().toDateString()
         ).length;
-        
+
         return {
           title: `${user.district} - Admin Dashboard`,
           subtitle: 'Manage your district operations and monitor performance',
@@ -96,10 +96,10 @@ export default function Dashboard() {
         const monthlyRevenue = collections
           .filter(c => new Date(c.date).getMonth() === new Date().getMonth())
           .reduce((sum, c) => sum + c.amount, 0);
-        const todaysCollectionsFinance = collections.filter(c => 
+        const todaysCollectionsFinance = collections.filter(c =>
           new Date(c.date).toDateString() === new Date().toDateString()
         ).length;
-        
+
         return {
           title: 'Financial Overview',
           subtitle: 'Monitor revenue and validate collections',
@@ -113,7 +113,7 @@ export default function Dashboard() {
             { label: 'Validate Payments', href: '/collections', icon: CheckCircle, description: 'Review and approve pending payments', color: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600' },
             { label: 'Financial Reports', href: '/reports', icon: BarChart3, description: 'Generate financial statements', color: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600' },
             { label: 'Revenue Analysis', href: '/revenue-analysis', icon: TrendingUp, description: 'Analyze revenue trends', color: 'bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600' },
-            { label: 'Collector Performance', href: '/performance', icon: Target, description: 'View collector metrics', color: 'bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600' },
+            { label: 'Collections Overview', href: '/collections', icon: Target, description: 'View collection metrics', color: 'bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600' },
             { label: 'Export Records', href: '/exports', icon: Database, description: 'Export financial data', color: 'bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600' },
             { label: 'Manage Revenue Types', href: '/revenue-types', icon: CreditCard, description: 'Configure fee structures', color: 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600' },
           ]
@@ -123,19 +123,19 @@ export default function Dashboard() {
       case 'collector': {
         // Calculate collector-specific stats
         const collectorCollections = collections.filter(c => c.collectorId === user.id);
-        const todayCollections = collectorCollections.filter(c => 
+        const todayCollections = collectorCollections.filter(c =>
           new Date(c.date).toDateString() === new Date().toDateString()
         );
         const todayRevenue = todayCollections.reduce((sum, c) => sum + c.amount, 0);
-        const monthlyCollections = collectorCollections.filter(c => 
+        const monthlyCollections = collectorCollections.filter(c =>
           new Date(c.date).getMonth() === new Date().getMonth() &&
           new Date(c.date).getFullYear() === new Date().getFullYear()
         );
         const monthlyRevenue = monthlyCollections.reduce((sum, c) => sum + c.amount, 0);
-        
+
         // Assume 10% growth from previous month for demo
         const growthRate = 10;
-        
+
         return {
           title: 'Collection Dashboard',
           subtitle: 'Manage your assigned collections',
@@ -165,7 +165,7 @@ export default function Dashboard() {
             { title: 'Business Status', value: 'Active', icon: CheckCircle, color: 'red' as const },
           ],
           quickActions: [
-            { label: 'Payment History', href: '/payment-history', icon: FileText, description: 'View payment records', color: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600' },
+            { label: 'Payment Management', href: '/payment-management', icon: FileText, description: 'View payment records and receipts', color: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600' },
             { label: 'Business Profile', href: '/business-profile', icon: Building2, description: 'Update business info', color: 'bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600' },
           ]
         };
@@ -199,12 +199,12 @@ export default function Dashboard() {
             { title: 'Active Issues', value: '7', icon: AlertTriangle, color: 'red' as const },
           ],
           quickActions: [
-            { label: 'Performance Dashboard', href: '/performance', icon: TrendingUp, description: 'Monitor district performance', color: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600' },
+            { label: 'MMDA Reports', href: '/mmda-reports', icon: TrendingUp, description: 'Monitor district performance', color: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600' },
             { label: 'Data Export', href: '/data-export', icon: Database, description: 'Export monitoring data', color: 'bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600' },
           ]
         };
       }
-        
+
       case 'business_registration_officer': {
         return {
           title: 'Business Registration',
@@ -303,7 +303,7 @@ export default function Dashboard() {
           }
         ];
       }
-      
+
       case 'finance': {
         return [
           {
@@ -340,7 +340,7 @@ export default function Dashboard() {
           }
         ];
       }
-        
+
       case 'collector': {
         return [
           {
@@ -369,7 +369,7 @@ export default function Dashboard() {
           }
         ];
       }
-        
+
       case 'business_registration_officer': {
         return [
           {
@@ -398,7 +398,7 @@ export default function Dashboard() {
           }
         ];
       }
-      
+
       default: {
         return [
           {
@@ -471,11 +471,11 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
           <Clock className="w-4 h-4" />
-          <span>{new Date().toLocaleDateString('en-GB', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+          <span>{new Date().toLocaleDateString('en-GB', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
           })}</span>
         </div>
       </div>
@@ -501,11 +501,11 @@ export default function Dashboard() {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               {user?.role === 'regional_admin' ? 'Regional Management Tools' :
-               user?.role === 'mmda_admin' ? 'District Management Tools' : 
-               user?.role === 'finance' ? 'Financial Management Tools' :
-               user?.role === 'collector' ? 'Collection Tools' :
-               user?.role === 'business_registration_officer' ? 'Business Registration Tools' :
-               'Frequently Used Tools'}
+                user?.role === 'mmda_admin' ? 'District Management Tools' :
+                  user?.role === 'finance' ? 'Financial Management Tools' :
+                    user?.role === 'collector' ? 'Collection Tools' :
+                      user?.role === 'business_registration_officer' ? 'Business Registration Tools' :
+                        'Frequently Used Tools'}
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -570,11 +570,11 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               {user?.role === 'regional_admin' ? 'Regional Alerts' :
-               user?.role === 'finance' ? 'Financial Alerts' : 
-               user?.role === 'mmda_admin' ? 'District Alerts' : 
-               user?.role === 'collector' ? 'Collection Alerts' :
-               user?.role === 'business_registration_officer' ? 'Registration Alerts' :
-               'System Alerts'}
+                user?.role === 'finance' ? 'Financial Alerts' :
+                  user?.role === 'mmda_admin' ? 'District Alerts' :
+                    user?.role === 'collector' ? 'Collection Alerts' :
+                      user?.role === 'business_registration_officer' ? 'Registration Alerts' :
+                        'System Alerts'}
             </h3>
             <div className="flex items-center space-x-2">
               <Bell className="w-4 h-4 text-gray-400 dark:text-gray-500" />
@@ -595,7 +595,7 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
                     <div className="flex items-center justify-between mt-2">
                       <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
-                      <Link 
+                      <Link
                         to={alert.href}
                         className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                       >
@@ -614,7 +614,7 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
                     <div className="flex items-center justify-between mt-2">
                       <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
-                      <Link 
+                      <Link
                         to={alert.href}
                         className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                       >

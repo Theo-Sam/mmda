@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Shield, 
-  CheckCircle, 
-  AlertTriangle, 
-  XCircle, 
-  Play, 
-  RefreshCw, 
-  Download, 
+import {
+  Shield,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  Play,
+  RefreshCw,
+  Download,
   Eye,
   Calendar,
   FileText,
@@ -20,6 +20,7 @@ import {
   Search
 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ComplianceCheck {
   id: string;
@@ -151,6 +152,7 @@ const complianceIssues: ComplianceIssue[] = [
 ];
 
 export default function ComplianceCheck() {
+  const { user } = useAuth();
   const [checks, setChecks] = useState<ComplianceCheck[]>(complianceChecks);
   const [issues, setIssues] = useState<ComplianceIssue[]>(complianceIssues);
   const [isRunning, setIsRunning] = useState<string | null>(null);
@@ -158,7 +160,7 @@ export default function ComplianceCheck() {
   const [selectedIssue, setSelectedIssue] = useState<ComplianceIssue | null>(null);
   const { theme } = useTheme();
 
-  const filteredChecks = checks.filter(check => 
+  const filteredChecks = checks.filter(check =>
     selectedCategory === 'all' || check.category === selectedCategory
   );
 
@@ -194,44 +196,44 @@ export default function ComplianceCheck() {
 
   const runComplianceCheck = async (checkId: string) => {
     setIsRunning(checkId);
-    
+
     // Simulate compliance check
     await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    setChecks(prev => prev.map(check => 
-      check.id === checkId 
+
+    setChecks(prev => prev.map(check =>
+      check.id === checkId
         ? { ...check, lastRun: new Date().toISOString(), status: 'passed' as const }
         : check
     ));
-    
+
     setIsRunning(null);
   };
 
   const runAllChecks = async () => {
     setIsRunning('all');
-    
+
     // Simulate running all checks
     await new Promise(resolve => setTimeout(resolve, 5000));
-    
+
     setChecks(prev => prev.map(check => ({
       ...check,
       lastRun: new Date().toISOString()
     })));
-    
+
     setIsRunning(null);
   };
 
   const resolveIssue = (issueId: string) => {
-    setIssues(prev => prev.map(issue => 
-      issue.id === issueId 
+    setIssues(prev => prev.map(issue =>
+      issue.id === issueId
         ? { ...issue, status: 'resolved' as const }
         : issue
     ));
   };
 
   const acknowledgeIssue = (issueId: string) => {
-    setIssues(prev => prev.map(issue => 
-      issue.id === issueId 
+    setIssues(prev => prev.map(issue =>
+      issue.id === issueId
         ? { ...issue, status: 'acknowledged' as const }
         : issue
     ));
@@ -376,11 +378,10 @@ export default function ComplianceCheck() {
                     <span className="text-xs font-medium text-gray-900 dark:text-white">{check.score}%</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full ${
-                        check.score >= 95 ? 'bg-green-600 dark:bg-green-500' :
-                        check.score >= 85 ? 'bg-yellow-600 dark:bg-yellow-500' : 'bg-red-600 dark:bg-red-500'
-                      }`}
+                    <div
+                      className={`h-2 rounded-full ${check.score >= 95 ? 'bg-green-600 dark:bg-green-500' :
+                          check.score >= 85 ? 'bg-yellow-600 dark:bg-yellow-500' : 'bg-red-600 dark:bg-red-500'
+                        }`}
                       style={{ width: `${check.score}%` }}
                     ></div>
                   </div>
@@ -476,7 +477,7 @@ export default function ComplianceCheck() {
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
@@ -504,7 +505,7 @@ export default function ComplianceCheck() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date Found</label>
                 <p className="text-sm text-gray-900 dark:text-white">{new Date(selectedIssue.dateFound).toLocaleDateString()}</p>
               </div>
-              
+
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <button
                   onClick={() => setSelectedIssue(null)}
@@ -529,6 +530,52 @@ export default function ComplianceCheck() {
                   className="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600"
                 >
                   Resolve
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Compliance Reporting Section */}
+      {user?.role === 'auditor' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Compliance Reporting & Analytics</h3>
+            <p className="text-gray-600 dark:text-gray-400">Generate compliance reports and analyze audit findings</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Compliance Summary</h4>
+                  <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">Generate compliance summary reports</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  Generate Summary
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Issue Analysis</h4>
+                  <AlertTriangle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">Analyze compliance issues and trends</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  View Analysis
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Export Reports</h4>
+                  <Download className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Export compliance data and reports</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  Export Data
                 </button>
               </div>
             </div>

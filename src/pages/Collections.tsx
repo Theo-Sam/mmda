@@ -32,16 +32,16 @@ export default function Collections() {
   const filteredCollections = collectorCollections.filter(collection => {
     const business = businesses.find(b => b.id === collection.businessId);
     const revenueType = revenueTypes.find(rt => rt.id === collection.revenueTypeId);
-    
+
     const matchesSearch = business?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         collection.receiptCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         revenueType?.name.toLowerCase().includes(searchTerm.toLowerCase());
+      collection.receiptCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      revenueType?.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || collection.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
   // Calculate today's collections
-  const todaysCollections = collectorCollections.filter(c => 
+  const todaysCollections = collectorCollections.filter(c =>
     new Date(c.date).toDateString() === new Date().toDateString()
   );
   const todaysTotal = todaysCollections.reduce((sum, c) => sum + c.amount, 0);
@@ -50,14 +50,14 @@ export default function Collections() {
   const thisMonthCollections = collectorCollections.filter(c => {
     const collectionDate = new Date(c.date);
     const now = new Date();
-    return collectionDate.getMonth() === now.getMonth() && 
-           collectionDate.getFullYear() === now.getFullYear();
+    return collectionDate.getMonth() === now.getMonth() &&
+      collectionDate.getFullYear() === now.getFullYear();
   });
   const monthlyTotal = thisMonthCollections.reduce((sum, c) => sum + c.amount, 0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const newCollection = {
       id: uuidv4(),
       businessId: formData.businessId,
@@ -72,10 +72,10 @@ export default function Collections() {
     };
 
     addCollection(newCollection);
-    
+
     const business = businesses.find(b => b.id === formData.businessId);
     const revenueType = revenueTypes.find(rt => rt.id === formData.revenueTypeId);
-    
+
     addAuditLog({
       userId: user!.id,
       userName: user!.name,
@@ -97,7 +97,7 @@ export default function Collections() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // Auto-fill amount when revenue type is selected
     if (name === 'revenueTypeId') {
       const revenueType = revenueTypes.find(rt => rt.id === value);
@@ -118,7 +118,7 @@ export default function Collections() {
   const generateReceipt = (collection: any) => {
     const business = businesses.find(b => b.id === collection.businessId);
     const revenueType = revenueTypes.find(rt => rt.id === collection.revenueTypeId);
-    
+
     // Mock receipt generation
     alert(`Receipt ${collection.receiptCode} generated for ${business?.name} - ${formatCurrency(collection.amount)}`);
   };
@@ -219,7 +219,7 @@ export default function Collections() {
                     <MapPin className="w-3 h-3" />
                     <span className="truncate">{business.gpsLocation}</span>
                   </div>
-                  
+
                   {lastPayment ? (
                     <div className="flex items-center space-x-2 text-xs text-green-600 dark:text-green-400 mb-3">
                       <CheckCircle className="w-3 h-3" />
@@ -231,7 +231,7 @@ export default function Collections() {
                       <span>No payments recorded</span>
                     </div>
                   )}
-                  
+
                   <button
                     onClick={() => {
                       setFormData(prev => ({ ...prev, businessId: business.id }));
@@ -317,7 +317,7 @@ export default function Collections() {
                 .map((collection) => {
                   const business = businesses.find(b => b.id === collection.businessId);
                   const revenueType = revenueTypes.find(rt => rt.id === collection.revenueTypeId);
-                  
+
                   return (
                     <tr key={collection.id} className="hover:bg-gray-50 dark:hover:bg-gray-750">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
@@ -394,7 +394,7 @@ export default function Collections() {
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Revenue Type
@@ -414,7 +414,7 @@ export default function Collections() {
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Amount (GHS)
@@ -431,7 +431,7 @@ export default function Collections() {
                   placeholder="0.00"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Payment Method
@@ -449,7 +449,7 @@ export default function Collections() {
                   <option value="pos">POS</option>
                 </select>
               </div>
-              
+
               <div className="flex items-center justify-end space-x-3 pt-4">
                 <button
                   type="button"
@@ -484,12 +484,12 @@ export default function Collections() {
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-4">
               {(() => {
                 const business = businesses.find(b => b.id === selectedCollection.businessId);
                 const revenueType = revenueTypes.find(rt => rt.id === selectedCollection.revenueTypeId);
-                
+
                 return (
                   <>
                     <div className="grid grid-cols-2 gap-4">
@@ -552,14 +552,106 @@ export default function Collections() {
         </div>
       )}
 
+      {/* Enhanced Finance & Analytics Section */}
+      {user?.role === 'finance' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Finance Analytics & Validation</h3>
+            <p className="text-gray-600 dark:text-gray-400">Comprehensive financial insights and payment validation tools</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Payment Validation</h4>
+                  <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">Validate and approve pending payments</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  Review Payments
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Revenue Overview</h4>
+                  <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">View revenue trends and collection metrics</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  View Analytics
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Export & Reports</h4>
+                  <Download className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Export financial data and generate reports</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  Export Data
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Receipt Management Section for Collectors */}
+      {user?.role === 'collector' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Receipt Management</h3>
+            <p className="text-gray-600 dark:text-gray-400">Generate and manage payment receipts for your collections</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Generate Receipts</h4>
+                  <Receipt className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">Create receipts for completed payments</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  Generate Receipt
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Receipt History</h4>
+                  <Receipt className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">View all generated receipts</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  View History
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Bulk Operations</h4>
+                  <Download className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Download multiple receipts at once</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  Bulk Download
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Empty State */}
       {filteredCollections.length === 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
           <Receipt className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No collections found</h3>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {searchTerm || filterStatus !== 'all' 
-              ? 'No collections match your current filters.' 
+            {searchTerm || filterStatus !== 'all'
+              ? 'No collections match your current filters.'
               : 'Start recording payments from your assigned businesses.'}
           </p>
           <button

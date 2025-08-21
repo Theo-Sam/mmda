@@ -116,3 +116,21 @@ export interface Zone {
   };
   isActive: boolean;
 }
+
+export interface Transaction {
+  id: string;
+  receiptId: string;
+  businessName: string;
+  collectorName: string;
+  amount: number;
+  date: string;
+  time: string;
+  paymentMethod: 'cash' | 'momo' | 'bank' | 'cheque' | 'pos';
+  revenueType: string;
+  status: 'normal' | 'flagged' | 'suspicious' | 'resolved';
+  riskLevel: 'low' | 'medium' | 'high';
+  flagReason?: string;
+  ipAddress: string;
+  deviceInfo: string;
+  district: string;
+}

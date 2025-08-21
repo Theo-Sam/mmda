@@ -30,7 +30,7 @@ export default function Businesses() {
     // Apply search and status filters
     return filteredList.filter(business => {
       const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           business.ownerName.toLowerCase().includes(searchTerm.toLowerCase());
+        business.ownerName.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesFilter = filterStatus === 'all' || business.status === filterStatus;
       return matchesSearch && matchesFilter;
     });
@@ -77,7 +77,7 @@ export default function Businesses() {
             {getPageDescription()}
           </p>
         </div>
-        
+
         <PermissionGate permission="register_business">
           <button
             onClick={() => setShowNewBusinessForm(true)}
@@ -171,12 +171,11 @@ export default function Businesses() {
                     <div className="text-sm text-gray-500 dark:text-gray-400">{business.gpsLocation}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      business.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
-                      business.status === 'inactive' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' :
-                      business.status === 'suspended' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
-                      'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
-                    }`}>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${business.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                        business.status === 'inactive' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' :
+                          business.status === 'suspended' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+                      }`}>
                       {business.status}
                     </span>
                   </td>
@@ -190,13 +189,13 @@ export default function Businesses() {
                           <Eye className="w-4 h-4" />
                         </button>
                       </PermissionGate>
-                      
+
                       <PermissionGate permission="edit_business">
                         <button className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300" title="Edit Business">
                           <Edit className="w-4 h-4" />
                         </button>
                       </PermissionGate>
-                      
+
                       <PermissionGate permission="delete_business">
                         <button className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300" title="Delete Business">
                           <Trash2 className="w-4 h-4" />
@@ -210,6 +209,52 @@ export default function Businesses() {
           </table>
         </div>
       </div>
+
+      {/* Business Reports & Analytics */}
+      {user?.role === 'mmda_admin' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Business Reports & Analytics</h3>
+            <p className="text-gray-600 dark:text-gray-400">Comprehensive reporting and insights for business management</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Business Overview</h4>
+                  <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">View business statistics and performance metrics</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  Generate Report
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Revenue Analysis</h4>
+                  <Building2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">Analyze business revenue and collection trends</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  View Analysis
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Export Data</h4>
+                  <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Export business data for external analysis</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  Export Data
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* New Business Form Modal */}
       {showNewBusinessForm && (
@@ -295,8 +340,8 @@ export default function Businesses() {
           <Building2 className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No businesses found</h3>
           <p className="text-gray-600 dark:text-gray-400">
-            {searchTerm || filterStatus !== 'all' 
-              ? 'No businesses match your current filters.' 
+            {searchTerm || filterStatus !== 'all'
+              ? 'No businesses match your current filters.'
               : 'Get started by registering your first business.'}
           </p>
         </div>

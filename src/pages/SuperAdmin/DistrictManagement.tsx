@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  MapPin, 
-  Users, 
-  Building2, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Eye,
+  MapPin,
+  Users,
+  Building2,
   DollarSign,
   CheckCircle,
   XCircle,
@@ -36,11 +36,11 @@ interface SearchableDropdownProps {
   required?: boolean;
 }
 
-function SearchableDropdown({ 
-  options, 
-  value, 
-  onChange, 
-  placeholder, 
+function SearchableDropdown({
+  options,
+  value,
+  onChange,
+  placeholder,
   disabled = false,
   required = false
 }: SearchableDropdownProps) {
@@ -48,7 +48,7 @@ function SearchableDropdown({
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-  
+
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -56,33 +56,32 @@ function SearchableDropdown({
         setIsOpen(false);
       }
     }
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  
-  const filteredOptions = options.filter(option => 
+
+  const filteredOptions = options.filter(option =>
     option.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   const handleSelect = (option: string) => {
     onChange(option);
     setIsOpen(false);
     setSearchTerm('');
   };
-  
+
   const displayValue = value || placeholder;
-  
+
   return (
     <div className="relative" ref={dropdownRef}>
-      <div 
-        className={`flex items-center justify-between w-full px-3 py-2 border rounded-lg ${
-          disabled 
-            ? 'bg-gray-100 dark:bg-gray-600 border-gray-300 dark:border-gray-600 cursor-not-allowed' 
-            : 'border-gray-300 dark:border-gray-600 cursor-pointer hover:border-gray-400 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-gray-700 dark:text-white'
-        }`}
+      <div
+        className={`flex items-center justify-between w-full px-3 py-2 border rounded-lg ${disabled
+          ? 'bg-gray-100 dark:bg-gray-600 border-gray-300 dark:border-gray-600 cursor-not-allowed'
+          : 'border-gray-300 dark:border-gray-600 cursor-pointer hover:border-gray-400 dark:hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-gray-700 dark:text-white'
+          }`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span className={`truncate ${!value ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'}`}>
@@ -90,7 +89,7 @@ function SearchableDropdown({
         </span>
         <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />
       </div>
-      
+
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg">
           <div className="p-2 border-b border-gray-200 dark:border-gray-700">
@@ -118,15 +117,14 @@ function SearchableDropdown({
               )}
             </div>
           </div>
-          
+
           <div className="max-h-60 overflow-y-auto">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option) => (
                 <div
                   key={option}
-                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    option === value ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-900 dark:text-white'
-                  }`}
+                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${option === value ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-900 dark:text-white'
+                    }`}
                   onClick={() => handleSelect(option)}
                 >
                   {option}
@@ -136,7 +134,7 @@ function SearchableDropdown({
               <div className="px-4 py-2 text-gray-500 dark:text-gray-400">No results found</div>
             )}
           </div>
-          
+
           {filteredOptions.length > 0 && (
             <div className="p-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
               {filteredOptions.length} {filteredOptions.length === 1 ? 'result' : 'results'} found
@@ -144,18 +142,18 @@ function SearchableDropdown({
           )}
         </div>
       )}
-      
+
       {required && !value && (
-        <input 
-          type="text" 
-          required 
-          style={{ 
-            position: 'absolute', 
-            opacity: 0, 
-            height: 0, 
-            width: 0, 
-            zIndex: -1 
-          }} 
+        <input
+          type="text"
+          required
+          style={{
+            position: 'absolute',
+            opacity: 0,
+            height: 0,
+            width: 0,
+            zIndex: -1
+          }}
         />
       )}
     </div>
@@ -171,7 +169,7 @@ export default function MMDAManagement() {
   const [showNewMMDAForm, setShowNewMMDAForm] = useState(false);
   const [selectedMMDA, setSelectedMMDA] = useState<MMDA | null>(null);
   const { theme } = useTheme();
-  
+
   // Form state for new MMDA
   const [selectedRegion, setSelectedRegion] = useState('Greater Accra');
   const [selectedMmdaName, setSelectedMmdaName] = useState('');
@@ -193,8 +191,8 @@ export default function MMDAManagement() {
   }
   const filteredMMDAs = districtMMDAs.filter(mmda => {
     const matchesSearch = mmda.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         mmda.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         mmda.adminName.toLowerCase().includes(searchTerm.toLowerCase());
+      mmda.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      mmda.adminName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || mmda.status === filterStatus;
     const matchesRegion = filterRegion === 'all' || mmda.region === filterRegion;
     return matchesSearch && matchesStatus && matchesRegion;
@@ -233,7 +231,7 @@ export default function MMDAManagement() {
 
   const handleSubmitNewMMDA = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedRegion || !selectedMmdaName || !selectedAdminId) {
       alert('Please fill in all required fields');
       return;
@@ -270,7 +268,7 @@ export default function MMDAManagement() {
 
     setMMDAs(prev => [...prev, newMMDA]);
     setShowNewMMDAForm(false);
-    
+
     // Reset form
     setSelectedRegion('');
     setSelectedMmdaName('');
@@ -280,7 +278,7 @@ export default function MMDAManagement() {
       adminEmail: '',
       phone: ''
     });
-    
+
     alert('MMDA created successfully!');
   };
 
@@ -328,7 +326,7 @@ export default function MMDAManagement() {
               <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active MMDAs</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Registered MMDAs</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">
                 {mmdas.filter(d => d.status === 'active').length}
               </p>
@@ -490,7 +488,7 @@ export default function MMDAManagement() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex items-center space-x-2">
-                      <button 
+                      <button
                         onClick={() => setSelectedMMDA(mmda)}
                         className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                         title="View Details"
@@ -528,7 +526,7 @@ export default function MMDAManagement() {
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-6">
               {/* Basic Info */}
               <div className="grid grid-cols-2 gap-4">
@@ -732,6 +730,72 @@ export default function MMDAManagement() {
           </div>
         </div>
       )}
+
+      {/* MMDA Reports & Analytics */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mt-8">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {user?.role === 'regional_admin' ? 'Regional Reports & Analytics' : 'MMDA Reports & Analytics'}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            {user?.role === 'regional_admin'
+              ? `Comprehensive reporting and insights for ${user.region} region MMDAs`
+              : 'Comprehensive reporting and insights for all MMDAs'
+            }
+          </p>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Regional Overview</h4>
+                <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                {user?.role === 'regional_admin'
+                  ? `View performance metrics for ${user.region} region MMDAs`
+                  : 'View performance metrics and statistics by region'
+                }
+              </p>
+              <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                Generate Report
+              </button>
+            </div>
+
+            <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Performance Analysis</h4>
+                <Building2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+              </div>
+              <p className="text-sm text-green-800 dark:text-green-200 mb-3">
+                {user?.role === 'regional_admin'
+                  ? 'Compare MMDA performance within your region'
+                  : 'Compare MMDA performance and efficiency metrics'
+                }
+              </p>
+              <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                View Analysis
+              </button>
+            </div>
+
+            <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Export Data</h4>
+                <DollarSign className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">
+                {user?.role === 'regional_admin'
+                  ? 'Export regional MMDA data for analysis'
+                  : 'Export MMDA data for external analysis and reporting'
+                }
+              </p>
+              <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                Export Data
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

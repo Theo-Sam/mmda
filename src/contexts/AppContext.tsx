@@ -34,6 +34,9 @@ interface AppContextType {
   collectorPerformance: CollectorData[];
   users: SystemUser[];
   setUsers: React.Dispatch<React.SetStateAction<SystemUser[]>>;
+  reconciliationData: any[];
+  revenueAnalytics: any[];
+  transactions: any[];
   addBusiness: (business: Omit<Business, 'id'>) => Promise<void>;
   updateBusiness: (id: string, updates: Partial<Business>) => Promise<void>;
   addCollection: (collection: Omit<Collection, 'id'>) => Promise<void>;
@@ -313,6 +316,119 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
+  const [reconciliationData] = useState<any[]>([
+    {
+      id: 'rec1',
+      date: '2024-06-20',
+      collectorName: 'Revenue Collector',
+      collectorId: '5',
+      reportedAmount: 500,
+      actualAmount: 500,
+      variance: 0,
+      variancePercentage: 0,
+      status: 'matched',
+      notes: 'Payment verified',
+      paymentMethod: 'cash',
+      receiptCount: 1
+    },
+    {
+      id: 'rec2',
+      date: '2024-06-20',
+      collectorName: 'Revenue Collector',
+      collectorId: '5',
+      reportedAmount: 800,
+      actualAmount: 750,
+      variance: -50,
+      variancePercentage: -6.25,
+      status: 'minor_discrepancy',
+      notes: 'Minor variance in collection',
+      paymentMethod: 'momo',
+      receiptCount: 1
+    },
+    {
+      id: 'rec3',
+      date: '2024-06-20',
+      collectorName: 'Revenue Collector',
+      collectorId: '5',
+      reportedAmount: 300,
+      actualAmount: 0,
+      variance: -300,
+      variancePercentage: -100,
+      status: 'pending',
+      notes: 'Payment pending verification',
+      paymentMethod: 'cash',
+      receiptCount: 0
+    }
+  ]);
+
+  const [revenueAnalytics] = useState<any[]>([
+    { month: 'Jan', revenue: 45000, target: 50000, growth: 12.5 },
+    { month: 'Feb', revenue: 52000, target: 50000, growth: 4.0 },
+    { month: 'Mar', revenue: 48000, target: 50000, growth: -4.0 },
+    { month: 'Apr', revenue: 55000, target: 50000, growth: 14.6 },
+    { month: 'May', revenue: 58000, target: 50000, growth: 5.5 },
+    { month: 'Jun', revenue: 62000, target: 50000, growth: 7.2 },
+    { month: 'Jul', revenue: 59000, target: 50000, growth: -4.8 },
+    { month: 'Aug', revenue: 65000, target: 50000, growth: 10.2 },
+    { month: 'Sep', revenue: 68000, target: 50000, growth: 4.6 },
+    { month: 'Oct', revenue: 72000, target: 50000, growth: 5.9 },
+    { month: 'Nov', revenue: 75000, target: 50000, growth: 4.2 },
+    { month: 'Dec', revenue: 80000, target: 50000, growth: 6.7 }
+  ]);
+
+  const [transactions] = useState<any[]>([
+    {
+      id: 'txn1',
+      receiptId: 'RCP-2024-1001',
+      businessName: 'Accra Bakery',
+      collectorName: 'Revenue Collector',
+      amount: 500,
+      date: '2024-06-20',
+      time: '10:30 AM',
+      paymentMethod: 'cash',
+      revenueType: 'Business Operating Permit',
+      status: 'normal',
+      riskLevel: 'low',
+      ipAddress: '192.168.1.100',
+      deviceInfo: 'Mobile App v1.2',
+      district: 'Accra Metropolitan'
+    },
+    {
+      id: 'txn2',
+      receiptId: 'RCP-2024-1002',
+      businessName: 'Tema Hardware',
+      collectorName: 'Revenue Collector',
+      amount: 800,
+      date: '2024-06-20',
+      time: '02:15 PM',
+      paymentMethod: 'momo',
+      revenueType: 'Signage Fee',
+      status: 'flagged',
+      riskLevel: 'medium',
+      flagReason: 'Unusual payment time',
+      ipAddress: '192.168.1.101',
+      deviceInfo: 'Web Browser',
+      district: 'Tema Metropolitan'
+    },
+    {
+      id: 'txn3',
+      receiptId: 'RCP-2024-1003',
+      businessName: 'Osu Boutique',
+      collectorName: 'Revenue Collector',
+      amount: 1200,
+      date: '2024-06-20',
+      time: '11:45 AM',
+      paymentMethod: 'bank',
+      revenueType: 'Business Operating Permit',
+      status: 'suspicious',
+      riskLevel: 'high',
+      flagReason: 'Amount exceeds normal range',
+      ipAddress: '192.168.1.102',
+      deviceInfo: 'Mobile App v1.2',
+      district: 'Accra Metropolitan'
+    }
+  ]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -431,6 +547,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       error: null,
       users,
       setUsers,
+      reconciliationData,
+      revenueAnalytics,
+      transactions,
     }}>
       {children}
     </AppContext.Provider>

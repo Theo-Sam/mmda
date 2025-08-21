@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  Building2, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Eye,
+  Building2,
+  CheckCircle,
+  XCircle,
   Clock,
   MapPin,
   Phone,
@@ -60,8 +60,8 @@ export default function BusinessManagement() {
   // Filter businesses based on search and filters
   const filteredBusinesses = districtBusinesses.filter(business => {
     const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         business.ownerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         business.gpsLocation.toLowerCase().includes(searchTerm.toLowerCase());
+      business.ownerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      business.gpsLocation.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || business.status === filterStatus;
     const matchesCategory = filterCategory === 'all' || business.category === filterCategory;
     return matchesSearch && matchesStatus && matchesCategory;
@@ -72,7 +72,7 @@ export default function BusinessManagement() {
 
   const handleSubmitNewBusiness = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.ownerName || !formData.category || !formData.phone || !formData.gpsLocation) {
       alert('Please fill in all required fields');
       return;
@@ -120,9 +120,9 @@ export default function BusinessManagement() {
         });
       }
     }
-    
+
     setShowNewBusinessForm(false);
-    
+
     // Reset form
     setFormData({
       name: '',
@@ -135,7 +135,7 @@ export default function BusinessManagement() {
       businessLicense: '',
       tinNumber: ''
     });
-    
+
     alert(`Business ${isEditing ? 'updated' : 'registered'} successfully!`);
   };
 
@@ -181,7 +181,7 @@ export default function BusinessManagement() {
   };
 
   const businessCategories = [
-    'Retail', 'Food Service', 'Electronics', 'Technology', 'Healthcare', 
+    'Retail', 'Food Service', 'Electronics', 'Technology', 'Healthcare',
     'Education', 'Construction', 'Transportation', 'Manufacturing', 'Services', 'Other'
   ];
 
@@ -193,7 +193,7 @@ export default function BusinessManagement() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Business Management</h1>
           <p className="text-gray-600 dark:text-gray-400">Register and manage businesses in your district</p>
         </div>
-        
+
         <PermissionGate permission="register_business">
           <button
             onClick={() => {
@@ -379,25 +379,25 @@ export default function BusinessManagement() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex items-center space-x-2">
                       <PermissionGate permission={['view_business', 'view_my_business']}>
-                        <button 
+                        <button
                           onClick={() => handleViewBusiness(business)}
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300" 
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                           title="View Details"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                       </PermissionGate>
-                      
+
                       <PermissionGate permission="edit_business">
-                        <button 
+                        <button
                           onClick={() => handleEditBusiness(business)}
-                          className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300" 
+                          className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300"
                           title="Edit Business"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                       </PermissionGate>
-                      
+
                       <PermissionGate permission="delete_business">
                         <button className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300" title="Delete Business">
                           <Trash2 className="w-4 h-4" />
@@ -411,6 +411,52 @@ export default function BusinessManagement() {
           </table>
         </div>
       </div>
+
+      {/* Business Registration Reports & Analytics */}
+      {user?.role === 'business_registration_officer' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Registration Reports & Analytics</h3>
+            <p className="text-gray-600 dark:text-gray-400">Comprehensive business registration reports and insights</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Registration Summary</h4>
+                  <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">Generate business registration summary reports</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  Generate Report
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Category Analysis</h4>
+                  <Building2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">Analyze business registrations by category</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  View Analysis
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Export Data</h4>
+                  <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Export business registration data</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  Export Data
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* New/Edit Business Form Modal */}
       {showNewBusinessForm && (
@@ -427,7 +473,7 @@ export default function BusinessManagement() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmitNewBusiness} className="space-y-6">
               {/* Business Information */}
               <div>
@@ -641,7 +687,7 @@ export default function BusinessManagement() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="space-y-6">
               {/* Business Status Card */}
               <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-750 rounded-lg border border-gray-200 dark:border-gray-700">

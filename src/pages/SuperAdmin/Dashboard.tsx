@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  Globe, 
-  Users, 
-  Building2, 
-  DollarSign, 
-  TrendingUp, 
+import {
+  Globe,
+  Users,
+  Building2,
+  DollarSign,
+  TrendingUp,
   AlertTriangle,
   CheckCircle,
   Clock,
@@ -110,7 +110,7 @@ export default function SuperAdminDashboard() {
           color="green"
         />
         <StatCard
-          title="Active MMDAs"
+          title="Registered MMDAs"
           value={`${nationalStats.activeMMDAs}/${nationalStats.totalMMDAs}`}
           icon={Globe}
           color="blue"
@@ -226,7 +226,7 @@ export default function SuperAdminDashboard() {
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Top Performing MMDAs</h3>
-                <Link 
+                <Link
                   to="/districts"
                   className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                 >
@@ -292,7 +292,7 @@ export default function SuperAdminDashboard() {
               ))}
             </div>
             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <Link 
+              <Link
                 to="/system-monitoring"
                 className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
               >

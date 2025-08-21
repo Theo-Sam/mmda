@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Search, 
-  Filter, 
-  Flag, 
-  Eye, 
-  Download, 
-  AlertTriangle, 
-  CheckCircle, 
+import {
+  Search,
+  Filter,
+  Flag,
+  Eye,
+  Download,
+  AlertTriangle,
+  CheckCircle,
   XCircle,
   Calendar,
   DollarSign,
@@ -22,6 +22,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { filterByJurisdiction } from '../../utils/filterByJurisdiction';
 import { useApp } from '../../contexts/AppContext';
+import { Transaction } from '../../types';
 
 export default function TransactionReview() {
   const { user } = useAuth();
@@ -37,8 +38,8 @@ export default function TransactionReview() {
   const districtTransactions = user ? filterByJurisdiction(user, transactions) : transactions;
   const filteredTransactions = districtTransactions.filter(transaction => {
     const matchesSearch = transaction.receiptId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         transaction.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         transaction.collectorName.toLowerCase().includes(searchTerm.toLowerCase());
+      transaction.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.collectorName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || transaction.status === filterStatus;
     const matchesRisk = filterRisk === 'all' || transaction.riskLevel === filterRisk;
     const matchesDate = !filterDate || transaction.date === filterDate;
@@ -357,7 +358,7 @@ export default function TransactionReview() {
                 ×
               </button>
             </div>
-            
+
             <div className="space-y-6">
               {/* Transaction Info */}
               <div className="grid grid-cols-2 gap-4">
@@ -470,6 +471,52 @@ export default function TransactionReview() {
                     Resolve Issue
                   </button>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Audit & Reporting Section */}
+      {user?.role === 'auditor' && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Audit & Reporting Tools</h3>
+            <p className="text-gray-600 dark:text-gray-400">Comprehensive audit tools and reporting capabilities</p>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-blue-900 dark:text-blue-100">Audit Logs</h4>
+                  <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">View comprehensive audit trail and logs</p>
+                <button className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                  View Logs
+                </button>
+              </div>
+
+              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-green-900 dark:text-green-100">Audit Reports</h4>
+                  <BarChart3 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-sm text-green-800 dark:text-green-200 mb-3">Generate detailed audit reports</p>
+                <button className="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  Generate Reports
+                </button>
+              </div>
+
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-md font-semibold text-purple-900 dark:text-purple-100">Export Data</h4>
+                  <Download className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-purple-800 dark:text-purple-200 mb-3">Export audit data for external analysis</p>
+                <button className="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                  Export Data
+                </button>
               </div>
             </div>
           </div>

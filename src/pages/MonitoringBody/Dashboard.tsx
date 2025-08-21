@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  Globe, 
-  TrendingUp, 
-  BarChart3, 
-  Users, 
-  Building2, 
+import {
+  Globe,
+  TrendingUp,
+  BarChart3,
+  Users,
+  Building2,
   DollarSign,
   AlertTriangle,
   CheckCircle,
@@ -37,43 +37,43 @@ const nationalStats = {
 };
 
 const topPerformingMMDAs = [
-  { 
-    name: 'Accra Metropolitan', 
-    revenue: 2450000, 
-    growth: 15.2, 
-    businesses: 3456, 
+  {
+    name: 'Accra Metropolitan',
+    revenue: 2450000,
+    growth: 15.2,
+    businesses: 3456,
     compliance: 96.8,
     region: 'Greater Accra'
   },
-  { 
-    name: 'Kumasi Metropolitan', 
-    revenue: 1890000, 
-    growth: 12.8, 
-    businesses: 2789, 
+  {
+    name: 'Kumasi Metropolitan',
+    revenue: 1890000,
+    growth: 12.8,
+    businesses: 2789,
     compliance: 94.5,
     region: 'Ashanti'
   },
-  { 
-    name: 'Tema Municipal', 
-    revenue: 1650000, 
-    growth: 18.5, 
-    businesses: 1987, 
+  {
+    name: 'Tema Municipal',
+    revenue: 1650000,
+    growth: 18.5,
+    businesses: 1987,
     compliance: 92.1,
     region: 'Greater Accra'
   },
-  { 
-    name: 'Cape Coast Metropolitan', 
-    revenue: 1420000, 
-    growth: 9.3, 
-    businesses: 1654, 
+  {
+    name: 'Cape Coast Metropolitan',
+    revenue: 1420000,
+    growth: 9.3,
+    businesses: 1654,
     compliance: 89.7,
     region: 'Central'
   },
-  { 
-    name: 'Tamale Metropolitan', 
-    revenue: 1280000, 
-    growth: 14.7, 
-    businesses: 1432, 
+  {
+    name: 'Tamale Metropolitan',
+    revenue: 1280000,
+    growth: 14.7,
+    businesses: 1432,
     compliance: 91.3,
     region: 'Northern'
   }
@@ -102,7 +102,7 @@ const performanceAlerts = [
     message: 'Monthly performance report generated successfully',
     time: '6 hours ago',
     action: 'Download Report',
-    href: '/reports-exports'
+    href: '/mmda-reports'
   },
   {
     type: 'success',
@@ -204,7 +204,7 @@ export default function MonitoringBodyDashboard() {
           color="green"
         />
         <StatCard
-          title="Active MMDAs"
+          title="Registered MMDAs"
           value={`${nationalStats.activeMMDAs}/${nationalStats.totalMMDAs}`}
           icon={Globe}
           change={2.1}
@@ -274,7 +274,7 @@ export default function MonitoringBodyDashboard() {
           </Link>
 
           <Link
-            to="/reports-exports"
+            to="/mmda-reports"
             className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-200 hover:border-purple-300 dark:hover:border-purple-700"
           >
             <div className="flex items-start space-x-4">
@@ -323,7 +323,7 @@ export default function MonitoringBodyDashboard() {
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Top Performing MMDAs</h3>
-                <Link 
+                <Link
                   to="/mmda-reports"
                   className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                 >
@@ -394,7 +394,7 @@ export default function MonitoringBodyDashboard() {
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{alert.message}</p>
                     <div className="flex items-center justify-between mt-2">
                       <p className="text-xs text-gray-500 dark:text-gray-400">{alert.time}</p>
-                      <Link 
+                      <Link
                         to={alert.href}
                         className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                       >
@@ -462,11 +462,10 @@ export default function MonitoringBodyDashboard() {
                     <div className="flex items-center space-x-2">
                       <span className="text-sm text-gray-900 dark:text-white">{region.compliance}%</span>
                       <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            region.compliance >= 95 ? 'bg-green-600 dark:bg-green-500' :
+                        <div
+                          className={`h-2 rounded-full ${region.compliance >= 95 ? 'bg-green-600 dark:bg-green-500' :
                             region.compliance >= 85 ? 'bg-yellow-600 dark:bg-yellow-500' : 'bg-red-600 dark:bg-red-500'
-                          }`}
+                            }`}
                           style={{ width: `${region.compliance}%` }}
                         ></div>
                       </div>

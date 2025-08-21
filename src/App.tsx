@@ -11,23 +11,24 @@ import Businesses from './pages/Businesses';
 import BusinessManagement from './pages/BusinessManagement';
 import Collections from './pages/Collections';
 import Reports from './pages/Reports';
-import AuditLogs from './pages/AuditLogs';
-import PaymentHistory from './pages/PaymentHistory';
+
+
 import Settings from './pages/Settings';
 import PaymentValidation from './pages/PaymentValidation';
-import ReceiptGenerator from './pages/ReceiptGenerator';
+
 import BusinessProfile from './pages/BusinessProfile';
 import MakePayment from './pages/MakePayment';
-import ReceiptsDownload from './pages/ReceiptsDownload';
+import PaymentManagement from './pages/PaymentManagement';
 import RoleBasedRoute from './components/Common/RoleBasedRoute';
 
 // Super Admin Pages
 import SuperAdminDashboard from './pages/SuperAdmin/Dashboard';
 import MMDAManagement from './pages/SuperAdmin/DistrictManagement';
 import UserManagement from './pages/SuperAdmin/UserManagement';
-import RoleManagement from './pages/SuperAdmin/RoleManagement';
+
 import ReportsCenter from './pages/SuperAdmin/ReportsCenter';
 import SystemMonitoring from './pages/SuperAdmin/SystemMonitoring';
+
 
 // Auditor Pages
 import AuditorDashboard from './pages/Auditor/Dashboard';
@@ -38,15 +39,13 @@ import AuditorReportsCenter from './pages/Auditor/ReportsCenter';
 // Monitoring Body Pages
 import MonitoringBodyDashboard from './pages/MonitoringBody/Dashboard';
 import MMDAReports from './pages/MonitoringBody/MMDAReports';
-import CollectorPerformance from './pages/Finance/CollectorPerformance';
-import ReportsExports from './pages/MonitoringBody/ReportsExports';
 
 // MMDA Admin Pages
 import MMDACollectorAssignments from './pages/MMDA/CollectorAssignments';
 import RevenueTypes from './pages/Revenue/RevenueTypes';
-import MMDAReportsCenter from './pages/MMDA/ReportsCenter';
+
 import MMDAUserManagement from './pages/MMDA/MMDAUserManagement';
-import FinanceReport from './pages/MMDA/FinanceReport';
+
 
 // Finance Pages
 import DataExports from './pages/Finance/DataExports';
@@ -61,11 +60,12 @@ import BusinessRegistrationOfficerDashboard from './pages/BusinessRegistrationOf
 
 // Regional Admin Pages
 import RegionalAdminUserManagement from './pages/RegionalAdmin/UserManagement';
-import RegionalReportCenter from './pages/RegionalAdmin/RegionalReportCenter';
+import RegionReportCenter from './pages/RegionalAdmin/RegionReportCenter';
+
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -73,7 +73,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
-  
+
   return user && user.role ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
@@ -85,7 +85,7 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/business" element={<BusinessOwnerLoginPage />} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      
+
       {/* Dashboard Route - Role-specific */}
       <Route
         path="/dashboard"
@@ -93,11 +93,11 @@ function AppRoutes() {
           <PrivateRoute>
             <RoleBasedRoute permission="view_dashboard">
               <Layout>
-                {user?.role === 'super_admin' ? <SuperAdminDashboard /> : 
-                 user?.role === 'auditor' ? <AuditorDashboard /> :
-                 user?.role === 'monitoring_body' ? <MonitoringBodyDashboard /> :
-                 user?.role === 'business_registration_officer' ? <BusinessRegistrationOfficerDashboard /> :
-                 <Dashboard />}
+                {user?.role === 'super_admin' ? <SuperAdminDashboard /> :
+                  user?.role === 'auditor' ? <AuditorDashboard /> :
+                    user?.role === 'monitoring_body' ? <MonitoringBodyDashboard /> :
+                      user?.role === 'business_registration_officer' ? <BusinessRegistrationOfficerDashboard /> :
+                        <Dashboard />}
               </Layout>
             </RoleBasedRoute>
           </PrivateRoute>
@@ -131,18 +131,7 @@ function AppRoutes() {
         }
       />
 
-      <Route
-        path="/role-management"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="manage_users">
-              <Layout>
-                <RoleManagement />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
+
 
       <Route
         path="/system-monitoring"
@@ -156,6 +145,8 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+
+
 
       {/* Auditor Routes */}
       <Route
@@ -198,31 +189,7 @@ function AppRoutes() {
         }
       />
 
-      <Route
-        path="/collector-performance"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="view_collector_performance">
-              <Layout>
-                <CollectorPerformance />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
 
-      <Route
-        path="/reports-exports"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="export_reports">
-              <Layout>
-                <ReportsExports />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
 
       {/* Regular Routes */}
       <Route
@@ -237,7 +204,7 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
-      
+
       <Route
         path="/collections"
         element={
@@ -250,48 +217,36 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
-      
+
       <Route
         path="/reports"
         element={
           <PrivateRoute>
             <RoleBasedRoute permission="view_reports">
               <Layout>
-                {user?.role === 'super_admin' ? <ReportsCenter /> : 
-                 user?.role === 'auditor' ? <AuditorReportsCenter /> : 
-                 user?.role === 'monitoring_body' ? <ReportsExports /> : <Reports />}
+                {user?.role === 'super_admin' ? <ReportsCenter /> :
+                  user?.role === 'auditor' ? <AuditorReportsCenter /> : <Reports />}
               </Layout>
             </RoleBasedRoute>
           </PrivateRoute>
         }
       />
-      
+
+
+
       <Route
-        path="/audit-logs"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="view_audit_logs">
-              <Layout>
-                <AuditLogs />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
-      
-      <Route
-        path="/payment-history"
+        path="/payment-management"
         element={
           <PrivateRoute>
             <RoleBasedRoute permission="view_my_payments">
               <Layout>
-                <PaymentHistory />
+                <PaymentManagement />
               </Layout>
             </RoleBasedRoute>
           </PrivateRoute>
         }
       />
-      
+
       <Route
         path="/settings"
         element={
@@ -332,18 +287,7 @@ function AppRoutes() {
         }
       />
 
-      <Route
-        path="/receipts-download"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="view_my_payments">
-              <Layout>
-                <ReceiptsDownload />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
+
 
       {/* Collector specific routes */}
       <Route
@@ -359,32 +303,9 @@ function AppRoutes() {
         }
       />
 
-      <Route
-        path="/receipts"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="generate_receipt">
-              <Layout>
-                <ReceiptGenerator />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
 
-      {/* Finance Officer specific routes */}
-      <Route
-        path="/performance"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="view_collector_performance">
-              <Layout>
-                <CollectorPerformance />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
+
+
 
       <Route
         path="/exports"
@@ -466,30 +387,21 @@ function AppRoutes() {
       />
 
       <Route
-        path="/regional-report-center"
+        path="/region-report-center"
         element={
           <PrivateRoute>
             <RoleBasedRoute permission="view_reports">
               <Layout>
-                <RegionalReportCenter />
+                <RegionReportCenter />
               </Layout>
             </RoleBasedRoute>
           </PrivateRoute>
         }
       />
 
-      <Route
-        path="/mmda-report-center"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="view_reports">
-              <Layout>
-                <MMDAReportsCenter />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
+
+
+
 
       <Route
         path="/mmda-users"
@@ -504,18 +416,7 @@ function AppRoutes() {
         }
       />
 
-      <Route
-        path="/mmda-finance-report"
-        element={
-          <PrivateRoute>
-            <RoleBasedRoute permission="view_reports">
-              <Layout>
-                <FinanceReport />
-              </Layout>
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
+
 
       {/* Catch all route */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

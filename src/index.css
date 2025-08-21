@@ -26,8 +26,26 @@
 }
 
 /* Apply transitions to specific properties instead of all */
-html, body, div, span, p, h1, h2, h3, h4, h5, h6, 
-button, input, select, textarea, a, table, tr, td, th {
+html,
+body,
+div,
+span,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+input,
+select,
+textarea,
+a,
+table,
+tr,
+td,
+th {
   @apply transition-colors duration-200;
 }
 
@@ -50,12 +68,12 @@ button, input, select, textarea, a, table, tr, td, th {
 }
 
 .dark .recharts-surface {
-  @apply !important;
+  @apply bg-gray-800 !important;
 }
 
 /* Fix for recharts in dark mode */
 .dark .recharts-layer {
-  @apply !important;
+  @apply text-gray-300 !important;
 }
 
 /* Ensure proper contrast for chart elements in dark mode */
