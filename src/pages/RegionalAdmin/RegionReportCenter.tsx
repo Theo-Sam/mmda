@@ -147,12 +147,7 @@ export default function RegionReportCenter() {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Greater Accra Region Report Center</h1>
                     <p className="text-gray-600 dark:text-gray-400">Regional performance analytics and insights for Greater Accra</p>
-                    {(!districtMMDAs || districtMMDAs.length === 0) && (
-                        <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
-                            <Globe className="w-3 h-3 mr-1" />
-                            Demo Mode - Using Sample Data
-                        </div>
-                    )}
+
                 </div>
                 <div className="flex items-center space-x-3">
                     <button
@@ -165,42 +160,7 @@ export default function RegionReportCenter() {
                 </div>
             </div>
 
-            {/* Jurisdiction Summary */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                    <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">Greater Accra Region Overview</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="text-center">
-                        <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                            {regionalData['Greater Accra'].totalMMDAs}
-                        </p>
-                        <p className="text-sm text-blue-700 dark:text-blue-300">Total MMDAs</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                            {regionalData['Greater Accra'].totalBusinesses}
-                        </p>
-                        <p className="text-sm text-blue-700 dark:text-blue-300">Total Businesses</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                            {formatCurrency(regionalData['Greater Accra'].totalRevenue)}
-                        </p>
-                        <p className="text-sm text-blue-700 dark:text-blue-300">Total Revenue</p>
-                    </div>
-                </div>
-                <div className="mt-4 text-center">
-                    <p className="text-sm text-blue-700 dark:text-blue-300">
-                        {user?.district ? (
-                            <>Managing: <span className="font-semibold">{user.district}</span> in Greater Accra</>
-                        ) : (
-                            <>Managing: <span className="font-semibold">Greater Accra Region (Demo Mode)</span></>
-                        )}
-                    </p>
-                </div>
-            </div>
+
 
             {/* Filters */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
