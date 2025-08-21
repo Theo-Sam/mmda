@@ -123,7 +123,7 @@ export default function MMDAReports() {
               <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total MMDAs</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Registered MMDAs</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">{mmdas.length}</p>
             </div>
           </div>
