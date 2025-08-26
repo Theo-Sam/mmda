@@ -24,11 +24,14 @@ import {
   Activity,
   Calculator,
   PieChart,
-  Target
+  Target,
+  AlertOctagon,
+  UserX
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useApp } from '../contexts/AppContext';
 import StatCard from '../components/Dashboard/StatCard';
+import AnalyticsSection from '../components/Dashboard/AnalyticsSection';
 import { Link } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -272,31 +275,55 @@ export default function Dashboard() {
 
   const dashboardContent = getDashboardContent();
 
-  // Role-specific alerts
+  // Role-specific alerts with enhanced MMDA admin alerts
   const getRoleSpecificAlerts = () => {
     switch (user?.role) {
       case 'mmda_admin': {
         return [
           {
-            type: 'warning',
-            message: 'Pending Validations',
-            details: '8 payments require your validation',
-            time: '2 hours ago',
-            action: 'Review Payments',
+            type: 'critical',
+            message: '3 pending validations exceed 48 hours',
+            details: 'High-value payments require immediate attention',
+            time: '1 hour ago',
+            action: 'Review Urgently',
             href: '/collections'
           },
           {
-            type: 'info',
-            message: 'New Business Applications',
-            details: '3 new business registrations submitted',
+            type: 'warning',
+            message: 'Collector John Doe hasn\'t submitted reports in 2 days',
+            details: 'Zone A collections may be delayed',
+            time: '2 hours ago',
+            action: 'Follow Up',
+            href: '/assignments'
+          },
+          {
+            type: 'critical',
+            message: '5 overdue payments from Zone C businesses',
+            details: 'Total overdue amount: GHS 12,500',
+            time: '3 hours ago',
+            action: 'Send Reminders',
+            href: '/collections'
+          },
+          {
+            type: 'warning',
+            message: 'Collector Sarah Wilson missed daily target',
+            details: 'Only 60% of assigned collections completed',
             time: '4 hours ago',
+            action: 'Check Performance',
+            href: '/assignments'
+          },
+          {
+            type: 'info',
+            message: 'New business applications pending verification',
+            details: '8 applications require document review',
+            time: '6 hours ago',
             action: 'Review Applications',
             href: '/businesses'
           },
           {
             type: 'success',
-            message: 'Monthly Target',
-            details: 'Revenue target achieved 112% this month',
+            message: 'Monthly revenue target achieved',
+            details: 'Revenue target exceeded by 15% this month',
             time: '1 day ago',
             action: 'View Report',
             href: '/reports'
@@ -434,7 +461,7 @@ export default function Dashboard() {
 
   const getAlertStyle = (type: string) => {
     switch (type) {
-      case 'critical': return 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30';
+      case 'critical': return 'border-red-300 dark:border-red-600 bg-red-100 dark:bg-red-900/40 shadow-sm';
       case 'warning': return 'border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/30';
       case 'info': return 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/30';
       case 'success': return 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30';
@@ -444,7 +471,7 @@ export default function Dashboard() {
 
   const getAlertIcon = (type: string) => {
     switch (type) {
-      case 'critical': return <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5" />;
+      case 'critical': return <AlertOctagon className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />;
       case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5" />;
       case 'info': return <Activity className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5" />;
       case 'success': return <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5" />;
@@ -493,6 +520,12 @@ export default function Dashboard() {
           />
         ))}
       </div>
+
+      {/* Analytics & Reports Section */}
+      <AnalyticsSection 
+        userRole={user?.role || ''} 
+        district={user?.district}
+      />
 
       {/* Quick Actions */}
       {dashboardContent.quickActions.length > 0 && (
@@ -564,7 +597,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Notifications/Alerts Panel */}
+      {/* Enhanced Notifications/Alerts Panel */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
@@ -583,48 +616,63 @@ export default function Dashboard() {
               </span>
             </div>
           </div>
+          {user?.role === 'mmda_admin' && (
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Monitor urgent district issues, pending validations, and collector performance
+            </p>
+          )}
         </div>
         <div className="p-6">
           <div className="space-y-4">
-            {user?.role === 'regional_admin' && dashboardContent.alerts ? (
-              dashboardContent.alerts.map((alert, index) => (
-                <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)}`}>
-                  {getAlertIcon(alert.type)}
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
-                      <Link
-                        to={alert.href}
-                        className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-                      >
-                        {alert.action} →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              alerts.map((alert, index) => (
-                <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)}`}>
-                  {getAlertIcon(alert.type)}
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
-                      <Link
-                        to={alert.href}
-                        className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-                      >
-                        {alert.action} →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+                         {user?.role === 'regional_admin' && dashboardContent.alerts ? (
+               dashboardContent.alerts.map((alert, index) => (
+                 <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)} relative`}>
+                   {alert.type === 'critical' && (
+                     <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg">
+                       URGENT
+                     </div>
+                   )}
+                   {getAlertIcon(alert.type)}
+                   <div className="flex-1">
+                     <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
+                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
+                     <div className="flex items-center justify-between mt-2">
+                       <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
+                       <Link
+                         to={alert.href}
+                         className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+                       >
+                         {alert.action} →
+                       </Link>
+                     </div>
+                   </div>
+                 </div>
+               ))
+             ) : (
+               alerts.map((alert, index) => (
+                 <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)} relative`}>
+                   {alert.type === 'critical' && (
+                     <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg">
+                       URGENT
+                     </div>
+                   )}
+                   {getAlertIcon(alert.type)}
+                   <div className="flex-1">
+                     <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
+                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
+                     <div className="flex items-center justify-between mt-2">
+                       <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
+                       <Link
+                         to={alert.href}
+                         className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+                       >
+                         {alert.action} →
+                       </Link>
+                     </div>
+                   </div>
+                 </div>
+               ))
+             )}
           </div>
         </div>
       </div>
