@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
-import { supabase } from '../utils/supabaseClient';
+import { authenticateUser } from '../utils/authService';
 
 interface AuthContextType {
   user: User | null;
@@ -24,35 +24,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const allowedRoles = [
-    'super_admin', 'mmda_admin', 'finance', 'collector', 'auditor',
-    'business_owner', 'monitoring_body', 'business_registration_officer', 'regional_admin'
-  ];
-
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error || !data.user) {
+      const authenticatedUser = authenticateUser({ email, password });
+      if (authenticatedUser) {
+        setUser(authenticatedUser);
+        localStorage.setItem('mmda_user', JSON.stringify(authenticatedUser));
+        setIsLoading(false);
+        return true;
+      } else {
         setIsLoading(false);
         return false;
       }
-      const role = data.user.user_metadata?.role || '';
-      if (!allowedRoles.includes(role)) {
-        setIsLoading(false);
-        return false;
-      }
-      const userProfile = {
-        id: data.user.id,
-        email: data.user.email,
-        name: data.user.user_metadata?.name || '',
-        role,
-        district: data.user.user_metadata?.district || '',
-      };
-      setUser(userProfile);
-      localStorage.setItem('mmda_user', JSON.stringify(userProfile));
-      setIsLoading(false);
-      return true;
     } catch (e) {
       setIsLoading(false);
       return false;

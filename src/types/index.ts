@@ -7,6 +7,7 @@ export interface User {
   phone?: string;
   avatar?: string;
   permissions?: string[];
+  password?: string; // Added for demo authentication
 }
 
 export interface Business {

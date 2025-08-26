@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Business, RevenueType, Collection, Assignment, AuditLog, DashboardStats } from '../types';
 import { MMDA } from '../types/MMDA';
-import { supabase } from '../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { SystemUser } from '../types/SystemUser';
 
@@ -23,20 +22,29 @@ export interface CollectorData {
 
 interface AppContextType {
   businesses: Business[];
+  setBusinesses: React.Dispatch<React.SetStateAction<Business[]>>;
   revenueTypes: RevenueType[];
+  setRevenueTypes: React.Dispatch<React.SetStateAction<RevenueType[]>>;
   collections: Collection[];
+  setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
   assignments: Assignment[];
   setAssignments: React.Dispatch<React.SetStateAction<Assignment[]>>;
   auditLogs: AuditLog[];
+  setAuditLogs: React.Dispatch<React.SetStateAction<AuditLog[]>>;
   dashboardStats: DashboardStats | null;
+  setDashboardStats: React.Dispatch<React.SetStateAction<DashboardStats | null>>;
   mmdas: MMDA[];
   setMMDAs: React.Dispatch<React.SetStateAction<MMDA[]>>;
   collectorPerformance: CollectorData[];
+  setCollectorPerformance: React.Dispatch<React.SetStateAction<CollectorData[]>>;
   users: SystemUser[];
   setUsers: React.Dispatch<React.SetStateAction<SystemUser[]>>;
   reconciliationData: any[];
+  setReconciliationData: React.Dispatch<React.SetStateAction<any[]>>;
   revenueAnalytics: any[];
+  setRevenueAnalytics: React.Dispatch<React.SetStateAction<any[]>>;
   transactions: any[];
+  setTransactions: React.Dispatch<React.SetStateAction<any[]>>;
   addBusiness: (business: Omit<Business, 'id'>) => Promise<void>;
   updateBusiness: (id: string, updates: Partial<Business>) => Promise<void>;
   addCollection: (collection: Omit<Collection, 'id'>) => Promise<void>;
@@ -48,7 +56,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [businesses] = useState<Business[]>([
+  const [businesses, setBusinesses] = useState<Business[]>([
     {
       id: 'b1', businessCode: 'BUS-100001', name: 'Accra Bakery', ownerName: 'Ama Mensah', category: 'Bakery', phone: '0244000001',
       email: 'ama@bakery.com', gpsLocation: 'Accra', physicalAddress: '123 Accra St', status: 'active', registrationDate: '2024-01-10',
@@ -66,7 +74,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
-  const [revenueTypes] = useState<RevenueType[]>([
+  const [revenueTypes, setRevenueTypes] = useState<RevenueType[]>([
     {
       id: 'rt1', code: 'RT-101', name: 'Business Operating Permit', defaultAmount: 500, frequency: 'yearly', description: 'Annual permit for business operation', isActive: true, category: 'permit'
     },
@@ -75,7 +83,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
-  const [collections] = useState<Collection[]>([
+  const [collections, setCollections] = useState<Collection[]>([
     {
       id: 'c1', receiptCode: 'RCP-2024-1001', businessId: 'b1', revenueTypeId: 'rt1', collectorId: '5', amount: 500, paymentMethod: 'cash',
       receiptId: 'RCPT-001', date: '2024-06-01', status: 'paid', district: 'Accra Metropolitan', receiptImage: '', notes: 'June payment'
@@ -99,7 +107,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
-  const [auditLogs] = useState<AuditLog[]>([
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([
     {
       id: 'al1', userId: '3', userName: 'MMDA Admin', userRole: 'mmda_admin', action: 'Created Business', details: 'Created Accra Bakery', timestamp: '2024-06-01T10:00:00Z', ipAddress: '192.168.1.1', district: 'Accra Metropolitan', entityType: 'business', entityId: 'b1'
     },
@@ -108,7 +116,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
-  const [dashboardStats] = useState<DashboardStats>({
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     totalRevenue: 1300,
     totalBusinesses: 3,
     totalCollectors: 1,
@@ -128,7 +136,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
-  const [collectorPerformance] = useState<CollectorData[]>([
+  const [collectorPerformance, setCollectorPerformance] = useState<CollectorData[]>([
     {
       id: '1',
       name: 'John Doe',
@@ -316,7 +324,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
-  const [reconciliationData] = useState<any[]>([
+  const [reconciliationData, setReconciliationData] = useState<any[]>([
     {
       id: 'rec1',
       date: '2024-06-20',
@@ -361,7 +369,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   ]);
 
-  const [revenueAnalytics] = useState<any[]>([
+  const [revenueAnalytics, setRevenueAnalytics] = useState<any[]>([
     { month: 'Jan', revenue: 45000, target: 50000, growth: 12.5 },
     { month: 'Feb', revenue: 52000, target: 50000, growth: 4.0 },
     { month: 'Mar', revenue: 48000, target: 50000, growth: -4.0 },
@@ -376,7 +384,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     { month: 'Dec', revenue: 80000, target: 50000, growth: 6.7 }
   ]);
 
-  const [transactions] = useState<any[]>([
+  const [transactions, setTransactions] = useState<any[]>([
     {
       id: 'txn1',
       receiptId: 'RCP-2024-1001',
@@ -429,127 +437,117 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   ]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    const fetchAll = async () => {
-      try {
-        const [bizRes, revRes, colRes, assignRes, auditRes, dashRes, mmdasRes] = await Promise.all([
-          supabase.from('businesses').select('*'),
-          supabase.from('revenue_types').select('*'),
-          supabase.from('collections').select('*'),
-          supabase.from('assignments').select('*'),
-          supabase.from('audit_logs').select('*'),
-          supabase.from('dashboard_stats').select('*').single(),
-          supabase.from('districts').select('*'),
-        ]);
-        if (bizRes.error || revRes.error || colRes.error || assignRes.error || auditRes.error || dashRes.error || mmdasRes.error) {
-          setError('Failed to fetch data from Supabase.');
-        } else {
-          setBusinesses(bizRes.data || []);
-          setRevenueTypes(revRes.data || []);
-          setCollections(colRes.data || []);
-          setAssignments(assignRes.data || []);
-          setAuditLogs(auditRes.data || []);
-          setDashboardStats(dashRes.data || null);
-          setMMDAs(mmdasRes.data || []);
-        }
-      } catch (e) {
-        setError('An unexpected error occurred.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAll();
-  }, []);
-
+  // Helper functions for generating codes
   function generateBusinessCode() {
     return 'BUS-' + Math.floor(100000 + Math.random() * 900000);
   }
+  
   function generateReceiptCode() {
     const year = new Date().getFullYear();
     return `RCP-${year}-${Math.floor(1000 + Math.random() * 9000)}`;
   }
+  
   function generateAssignmentCode() {
     return 'ASN-' + Math.floor(100000 + Math.random() * 900000);
   }
+  
   function generateRevenueTypeCode() {
     return 'RT-' + Math.floor(100 + Math.random() * 900);
   }
+  
   function generateDistrictCode() {
     return 'DST-' + Math.floor(100 + Math.random() * 900);
   }
+  
   function generateZoneCode() {
     return 'ZN-' + Math.floor(100 + Math.random() * 900);
   }
 
-  // CRUD operations
+  // CRUD operations - now working with local state only
   const addBusiness = async (business: Omit<Business, 'id' | 'businessCode'>) => {
-    const { data, error } = await supabase.from('businesses').insert([{ ...business, id: uuidv4(), businessCode: generateBusinessCode() }]).select();
-    if (!error && data) setBusinesses(prev => [...prev, ...data]);
+    const newBusiness: Business = {
+      ...business,
+      id: uuidv4(),
+      businessCode: generateBusinessCode()
+    };
+    setBusinesses(prev => [...prev, newBusiness]);
   };
 
   const updateBusiness = async (id: string, updates: Partial<Business>) => {
-    const { data, error } = await supabase.from('businesses').update(updates).eq('id', id).select();
-    if (!error && data) setBusinesses(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
+    setBusinesses(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
   };
 
   const addCollection = async (collection: Omit<Collection, 'id' | 'receiptCode'>) => {
-    const { data, error } = await supabase.from('collections').insert([{ ...collection, id: uuidv4(), receiptCode: generateReceiptCode() }]).select();
-    if (!error && data) setCollections(prev => [...prev, ...data]);
+    const newCollection: Collection = {
+      ...collection,
+      id: uuidv4(),
+      receiptCode: generateReceiptCode()
+    };
+    setCollections(prev => [...prev, newCollection]);
   };
 
   const addAuditLog = async (log: Omit<AuditLog, 'id' | 'timestamp'>) => {
-    const { data, error } = await supabase.from('audit_logs').insert([{ ...log, id: uuidv4(), timestamp: new Date().toISOString() }]).select();
-    if (!error && data) setAuditLogs(prev => [data[0], ...prev]);
+    const newLog: AuditLog = {
+      ...log,
+      id: uuidv4(),
+      timestamp: new Date().toISOString()
+    };
+    setAuditLogs(prev => [newLog, ...prev]);
   };
 
   const addAssignment = async (assignment: Omit<Assignment, 'id' | 'assignmentCode'>) => {
-    const { data, error } = await supabase.from('assignments').insert([{ ...assignment, id: uuidv4(), assignmentCode: generateAssignmentCode() }]).select();
-    if (!error && data) setAssignments(prev => [...prev, ...data]);
+    const newAssignment: Assignment = {
+      ...assignment,
+      id: uuidv4(),
+      assignmentCode: generateAssignmentCode()
+    };
+    setAssignments(prev => [...prev, newAssignment]);
   };
 
   const addRevenueType = async (revenueType: Omit<RevenueType, 'id' | 'code'>) => {
-    const { data, error } = await supabase.from('revenue_types').insert([{ ...revenueType, id: uuidv4(), code: generateRevenueTypeCode() }]).select();
-    if (!error && data) setRevenueTypes(prev => [...prev, ...data]);
-  };
-
-  const addDistrict = async (district: Omit<District, 'id' | 'code'>) => {
-    const { data, error } = await supabase.from('districts').insert([{ ...district, id: uuidv4(), code: generateDistrictCode() }]).select();
-    // handle state update if needed
-  };
-
-  const addZone = async (zone: Omit<Zone, 'id' | 'zoneCode'>) => {
-    const { data, error } = await supabase.from('zones').insert([{ ...zone, id: uuidv4(), zoneCode: generateZoneCode() }]).select();
-    // handle state update if needed
+    const newRevenueType: RevenueType = {
+      ...revenueType,
+      id: uuidv4(),
+      code: generateRevenueTypeCode()
+    };
+    setRevenueTypes(prev => [...prev, newRevenueType]);
   };
 
   return (
     <AppContext.Provider value={{
       businesses,
+      setBusinesses,
       revenueTypes,
+      setRevenueTypes,
       collections,
+      setCollections,
       assignments,
       setAssignments,
       auditLogs,
+      setAuditLogs,
       dashboardStats,
+      setDashboardStats,
       mmdas,
       setMMDAs,
       collectorPerformance,
+      setCollectorPerformance,
       addBusiness,
       updateBusiness,
       addCollection,
       addAuditLog,
-      loading: false,
-      error: null,
+      loading,
+      error,
       users,
       setUsers,
       reconciliationData,
+      setReconciliationData,
       revenueAnalytics,
+      setRevenueAnalytics,
       transactions,
+      setTransactions,
     }}>
       {children}
     </AppContext.Provider>
