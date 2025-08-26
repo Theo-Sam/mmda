@@ -1,0 +1,5 @@
+[33m78224a7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Remove Supabase authentication and implement demo accounts for all roles
+[33m5c7aaa8[m Made changes in the monitoring body
+[33m6c32754[m Made changes in the regional report
+[33m283220c[m Major UI cleanup and role-based page consolidation - Removed redundant pages and consolidated functionality - Updated Super Admin, Regional Admin, MMDA Admin, Finance Officer, Collector, Business Registration Officer, Auditor, Monitoring Body, and Business Owner roles - Added Region Report Center for Regional Admin - Fixed all runtime errors and improved data handling - Enhanced System Monitoring with Priority 3 features - Streamlined navigation and removed unnecessary routes
+[33m2109f27[m Deleted Migration folder

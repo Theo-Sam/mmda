@@ -1,10 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { Business, RevenueType, Collection, Assignment, AuditLog, DashboardStats } from '../types';
 import { MMDA } from '../types/MMDA';
 import { v4 as uuidv4 } from 'uuid';
 import { SystemUser } from '../types/SystemUser';
 
-// Add CollectorData type for mock collectorPerformance
 export interface CollectorData {
   id: string;
   name: string;
@@ -100,19 +99,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const [assignments, setAssignments] = useState<Assignment[]>([
     {
-      id: 'a1', assignmentCode: 'ASN-100001', collectorId: '5', businessId: 'b1', zone: 'Zone 1', startDate: '2024-06-01', endDate: '', isActive: true, assignedBy: '3', district: 'Accra Metropolitan'
+      id: 'a1', assignmentCode: 'ASG-2024-001', collectorId: '5', businessId: 'b1', zone: 'Zone A', startDate: '2024-06-01', isActive: true, assignedBy: 'admin1', district: 'Accra Metropolitan'
     },
     {
-      id: 'a2', assignmentCode: 'ASN-100002', collectorId: '5', businessId: 'b2', zone: 'Zone 2', startDate: '2024-06-10', endDate: '', isActive: true, assignedBy: '3', district: 'Tema Metropolitan'
+      id: 'a2', assignmentCode: 'ASG-2024-002', collectorId: '5', businessId: 'b2', zone: 'Zone B', startDate: '2024-06-01', isActive: true, assignedBy: 'admin1', district: 'Tema Metropolitan'
     },
   ]);
 
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([
     {
-      id: 'al1', userId: '3', userName: 'MMDA Admin', userRole: 'mmda_admin', action: 'Created Business', details: 'Created Accra Bakery', timestamp: '2024-06-01T10:00:00Z', ipAddress: '192.168.1.1', district: 'Accra Metropolitan', entityType: 'business', entityId: 'b1'
+      id: 'al1', userId: '5', userName: 'John Doe', userRole: 'collector', action: 'Collection recorded', details: 'Payment collected from Accra Bakery', timestamp: '2024-06-01T10:00:00Z', ipAddress: '192.168.1.1', district: 'Accra Metropolitan', entityType: 'payment', entityId: 'c1'
     },
     {
-      id: 'al2', userId: '4', userName: 'Finance Officer', userRole: 'finance', action: 'Validated Payment', details: 'Validated payment for Tema Hardware', timestamp: '2024-06-10T12:00:00Z', ipAddress: '192.168.1.2', district: 'Tema Metropolitan', entityType: 'payment', entityId: 'c2'
+      id: 'al2', userId: 'admin1', userName: 'Admin User', userRole: 'mmda_admin', action: 'Business registered', details: 'New business Osu Boutique registered', timestamp: '2024-03-20T14:30:00Z', ipAddress: '192.168.1.2', district: 'Accra Metropolitan', entityType: 'business', entityId: 'b3'
     },
   ]);
 
@@ -121,358 +120,44 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     totalBusinesses: 3,
     totalCollectors: 1,
     pendingPayments: 1,
-    monthlyGrowth: 5.5,
+    monthlyGrowth: 15.5,
     activeDistricts: 2,
-    totalUsers: 9,
-    systemUptime: 99.9,
+    totalUsers: 8,
+    systemUptime: 99.8
   });
 
   const [mmdas, setMMDAs] = useState<MMDA[]>([
     {
-      id: 'd1', name: 'Accra Metropolitan', code: 'ACM', region: 'Greater Accra', status: 'active', adminName: 'MMDA Admin', adminEmail: 'mmdaadmin@test.com', phone: '0244000003', totalRevenue: 500, totalBusinesses: 2, totalUsers: 5, lastActivity: '2024-06-25', createdDate: '2020-01-01'
+      id: 'mmda1', name: 'Accra Metropolitan Assembly', code: 'AMA', region: 'Greater Accra', district: 'Accra Metropolitan', contactEmail: 'info@ama.gov.gh', contactPhone: '+233302123456', address: 'Accra, Ghana', isActive: true, logo: '', website: 'https://ama.gov.gh'
     },
     {
-      id: 'd2', name: 'Tema Metropolitan', code: 'TEM', region: 'Greater Accra', status: 'active', adminName: 'MMDA Admin', adminEmail: 'mmdaadmin@test.com', phone: '0244000003', totalRevenue: 800, totalBusinesses: 1, totalUsers: 4, lastActivity: '2024-06-24', createdDate: '2020-01-01'
+      id: 'mmda2', name: 'Tema Metropolitan Assembly', code: 'TMA', region: 'Greater Accra', district: 'Tema Metropolitan', contactEmail: 'info@tma.gov.gh', contactPhone: '+233303123456', address: 'Tema, Ghana', isActive: true, logo: '', website: 'https://tma.gov.gh'
     },
   ]);
 
   const [collectorPerformance, setCollectorPerformance] = useState<CollectorData[]>([
     {
-      id: '1',
-      name: 'John Doe',
-      district: 'Accra Metropolitan',
-      region: 'Greater Accra',
-      totalCollected: 12000,
-      monthlyTarget: 15000,
-      businessesAssigned: 30,
-      collectionsCount: 25,
-      efficiency: 80,
-      growth: 5.2,
-      lastActive: '2024-06-25',
-      performance: 'good',
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      district: 'Accra Metropolitan',
-      region: 'Greater Accra',
-      totalCollected: 17000,
-      monthlyTarget: 15000,
-      businessesAssigned: 28,
-      collectionsCount: 27,
-      efficiency: 95,
-      growth: 7.1,
-      lastActive: '2024-06-24',
-      performance: 'excellent',
-    },
-    {
-      id: '3',
-      name: 'Kwame Mensah',
-      district: 'Accra Metropolitan',
-      region: 'Greater Accra',
-      totalCollected: 9000,
-      monthlyTarget: 15000,
-      businessesAssigned: 22,
-      collectionsCount: 18,
-      efficiency: 60,
-      growth: 2.8,
-      lastActive: '2024-06-23',
-      performance: 'average',
-    },
-    {
-      id: '4',
-      name: 'Ama Serwaa',
-      district: 'Accra Metropolitan',
-      region: 'Greater Accra',
-      totalCollected: 4000,
-      monthlyTarget: 15000,
-      businessesAssigned: 15,
-      collectionsCount: 10,
-      efficiency: 27,
-      growth: -1.2,
-      lastActive: '2024-06-22',
-      performance: 'poor',
+      id: 'cp1', name: 'John Doe', district: 'Accra Metropolitan', region: 'Greater Accra', totalCollected: 1300, monthlyTarget: 2000, businessesAssigned: 3, collectionsCount: 2, efficiency: 85, growth: 12, lastActive: '2024-06-15', performance: 'good'
     },
   ]);
 
   const [users, setUsers] = useState<SystemUser[]>([
     {
-      id: '1',
-      name: 'Super Admin',
-      email: 'superadmin@test.com',
-      role: 'super_admin',
-      district: '',
-      phone: '0244000001',
-      status: 'active',
-      lastLogin: '2024-06-25T08:00:00Z',
-      createdDate: '2022-01-01',
-      permissions: ['manage_users', 'view_reports', 'manage_roles'],
-      password: 'password',
-      region: '',
+      id: 'u1', name: 'John Doe', email: 'john@example.com', role: 'collector', district: 'Accra Metropolitan', phone: '0244000005', isActive: true, permissions: ['view_assignments', 'record_payment'], lastLogin: '2024-06-15T10:00:00Z'
     },
     {
-      id: '2',
-      name: 'Regional Admin',
-      email: 'regionaladmin@test.com',
-      role: 'regional_admin',
-      district: '',
-      phone: '0244000002',
-      status: 'active',
-      lastLogin: '2024-06-25T09:00:00Z',
-      createdDate: '2022-02-01',
-      permissions: ['manage_mmdas', 'view_reports'],
-      password: 'password',
-      region: 'Greater Accra',
-    },
-    {
-      id: '3',
-      name: 'MMDA Admin',
-      email: 'mmdaadmin@test.com',
-      role: 'mmda_admin',
-      district: 'Accra Metropolitan',
-      phone: '0244000003',
-      status: 'active',
-      lastLogin: '2024-06-25T10:00:00Z',
-      createdDate: '2022-03-01',
-      permissions: ['manage_users', 'view_reports'],
-      password: 'password',
-      region: 'Greater Accra',
-    },
-    {
-      id: '4',
-      name: 'Finance Officer',
-      email: 'finance@test.com',
-      role: 'finance',
-      district: 'Accra Metropolitan',
-      phone: '0244000004',
-      status: 'active',
-      lastLogin: '2024-06-24T11:00:00Z',
-      createdDate: '2022-04-01',
-      permissions: ['validate_payments', 'view_reports'],
-      password: 'password',
-      region: 'Greater Accra',
-    },
-    {
-      id: '5',
-      name: 'Collector',
-      email: 'collector@test.com',
-      role: 'collector',
-      district: 'Accra Metropolitan',
-      phone: '0244000005',
-      status: 'active',
-      lastLogin: '2024-06-23T12:00:00Z',
-      createdDate: '2022-05-01',
-      permissions: ['collect_payments'],
-      password: 'password',
-      region: 'Greater Accra',
-    },
-    {
-      id: '6',
-      name: 'Auditor',
-      email: 'auditor@test.com',
-      role: 'auditor',
-      district: 'Accra Metropolitan',
-      phone: '0244000006',
-      status: 'active',
-      lastLogin: '2024-06-22T13:00:00Z',
-      createdDate: '2022-06-01',
-      permissions: ['audit_transactions', 'view_reports'],
-      password: 'password',
-      region: 'Greater Accra',
-    },
-    {
-      id: '7',
-      name: 'Business Owner',
-      email: 'businessowner@test.com',
-      role: 'business_owner',
-      district: 'Accra Metropolitan',
-      phone: '0244000007',
-      status: 'inactive',
-      lastLogin: '2024-06-21T14:00:00Z',
-      createdDate: '2022-07-01',
-      permissions: ['view_own_business'],
-      password: 'password',
-      region: 'Greater Accra',
-    },
-    {
-      id: '8',
-      name: 'Monitoring Body',
-      email: 'monitoring@test.com',
-      role: 'monitoring_body',
-      district: '',
-      phone: '0244000008',
-      status: 'active',
-      lastLogin: '2024-06-20T15:00:00Z',
-      createdDate: '2022-08-01',
-      permissions: ['monitor_performance', 'view_reports'],
-      password: 'password',
-      region: 'Greater Accra',
-    },
-    {
-      id: '9',
-      name: 'Registration Officer',
-      email: 'registrationofficer@test.com',
-      role: 'business_registration_officer',
-      district: 'Accra Metropolitan',
-      phone: '0244000009',
-      status: 'suspended',
-      lastLogin: '2024-06-19T16:00:00Z',
-      createdDate: '2022-09-01',
-      permissions: ['register_businesses'],
-      password: 'password',
-      region: 'Greater Accra',
+      id: 'admin1', name: 'Admin User', email: 'admin@example.com', role: 'mmda_admin', district: 'Accra Metropolitan', phone: '0244000006', isActive: true, permissions: ['manage_users', 'view_reports'], lastLogin: '2024-06-15T09:00:00Z'
     },
   ]);
 
-  const [reconciliationData, setReconciliationData] = useState<any[]>([
-    {
-      id: 'rec1',
-      date: '2024-06-20',
-      collectorName: 'Revenue Collector',
-      collectorId: '5',
-      reportedAmount: 500,
-      actualAmount: 500,
-      variance: 0,
-      variancePercentage: 0,
-      status: 'matched',
-      notes: 'Payment verified',
-      paymentMethod: 'cash',
-      receiptCount: 1
-    },
-    {
-      id: 'rec2',
-      date: '2024-06-20',
-      collectorName: 'Revenue Collector',
-      collectorId: '5',
-      reportedAmount: 800,
-      actualAmount: 750,
-      variance: -50,
-      variancePercentage: -6.25,
-      status: 'minor_discrepancy',
-      notes: 'Minor variance in collection',
-      paymentMethod: 'momo',
-      receiptCount: 1
-    },
-    {
-      id: 'rec3',
-      date: '2024-06-20',
-      collectorName: 'Revenue Collector',
-      collectorId: '5',
-      reportedAmount: 300,
-      actualAmount: 0,
-      variance: -300,
-      variancePercentage: -100,
-      status: 'pending',
-      notes: 'Payment pending verification',
-      paymentMethod: 'cash',
-      receiptCount: 0
-    }
-  ]);
-
-  const [revenueAnalytics, setRevenueAnalytics] = useState<any[]>([
-    { month: 'Jan', revenue: 45000, target: 50000, growth: 12.5 },
-    { month: 'Feb', revenue: 52000, target: 50000, growth: 4.0 },
-    { month: 'Mar', revenue: 48000, target: 50000, growth: -4.0 },
-    { month: 'Apr', revenue: 55000, target: 50000, growth: 14.6 },
-    { month: 'May', revenue: 58000, target: 50000, growth: 5.5 },
-    { month: 'Jun', revenue: 62000, target: 50000, growth: 7.2 },
-    { month: 'Jul', revenue: 59000, target: 50000, growth: -4.8 },
-    { month: 'Aug', revenue: 65000, target: 50000, growth: 10.2 },
-    { month: 'Sep', revenue: 68000, target: 50000, growth: 4.6 },
-    { month: 'Oct', revenue: 72000, target: 50000, growth: 5.9 },
-    { month: 'Nov', revenue: 75000, target: 50000, growth: 4.2 },
-    { month: 'Dec', revenue: 80000, target: 50000, growth: 6.7 }
-  ]);
-
-  const [transactions, setTransactions] = useState<any[]>([
-    {
-      id: 'txn1',
-      receiptId: 'RCP-2024-1001',
-      businessName: 'Accra Bakery',
-      collectorName: 'Revenue Collector',
-      amount: 500,
-      date: '2024-06-20',
-      time: '10:30 AM',
-      paymentMethod: 'cash',
-      revenueType: 'Business Operating Permit',
-      status: 'normal',
-      riskLevel: 'low',
-      ipAddress: '192.168.1.100',
-      deviceInfo: 'Mobile App v1.2',
-      district: 'Accra Metropolitan'
-    },
-    {
-      id: 'txn2',
-      receiptId: 'RCP-2024-1002',
-      businessName: 'Tema Hardware',
-      collectorName: 'Revenue Collector',
-      amount: 800,
-      date: '2024-06-20',
-      time: '02:15 PM',
-      paymentMethod: 'momo',
-      revenueType: 'Signage Fee',
-      status: 'flagged',
-      riskLevel: 'medium',
-      flagReason: 'Unusual payment time',
-      ipAddress: '192.168.1.101',
-      deviceInfo: 'Web Browser',
-      district: 'Tema Metropolitan'
-    },
-    {
-      id: 'txn3',
-      receiptId: 'RCP-2024-1003',
-      businessName: 'Osu Boutique',
-      collectorName: 'Revenue Collector',
-      amount: 1200,
-      date: '2024-06-20',
-      time: '11:45 AM',
-      paymentMethod: 'bank',
-      revenueType: 'Business Operating Permit',
-      status: 'suspicious',
-      riskLevel: 'high',
-      flagReason: 'Amount exceeds normal range',
-      ipAddress: '192.168.1.102',
-      deviceInfo: 'Mobile App v1.2',
-      district: 'Accra Metropolitan'
-    }
-  ]);
-
+  const [reconciliationData, setReconciliationData] = useState<any[]>([]);
+  const [revenueAnalytics, setRevenueAnalytics] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Helper functions for generating codes
-  function generateBusinessCode() {
-    return 'BUS-' + Math.floor(100000 + Math.random() * 900000);
-  }
-  
-  function generateReceiptCode() {
-    const year = new Date().getFullYear();
-    return `RCP-${year}-${Math.floor(1000 + Math.random() * 9000)}`;
-  }
-  
-  function generateAssignmentCode() {
-    return 'ASN-' + Math.floor(100000 + Math.random() * 900000);
-  }
-  
-  function generateRevenueTypeCode() {
-    return 'RT-' + Math.floor(100 + Math.random() * 900);
-  }
-  
-  function generateDistrictCode() {
-    return 'DST-' + Math.floor(100 + Math.random() * 900);
-  }
-  
-  function generateZoneCode() {
-    return 'ZN-' + Math.floor(100 + Math.random() * 900);
-  }
-
-  // CRUD operations - now working with local state only
-  const addBusiness = async (business: Omit<Business, 'id' | 'businessCode'>) => {
-    const newBusiness: Business = {
-      ...business,
-      id: uuidv4(),
-      businessCode: generateBusinessCode()
-    };
+  const addBusiness = async (business: Omit<Business, 'id'>) => {
+    const newBusiness = { ...business, id: uuidv4() };
     setBusinesses(prev => [...prev, newBusiness]);
   };
 
@@ -480,40 +165,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setBusinesses(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
   };
 
-  const addCollection = async (collection: Omit<Collection, 'id' | 'receiptCode'>) => {
-    const newCollection: Collection = {
-      ...collection,
-      id: uuidv4(),
-      receiptCode: generateReceiptCode()
-    };
+  const addCollection = async (collection: Omit<Collection, 'id'>) => {
+    const newCollection = { ...collection, id: uuidv4() };
     setCollections(prev => [...prev, newCollection]);
   };
 
   const addAuditLog = async (log: Omit<AuditLog, 'id' | 'timestamp'>) => {
-    const newLog: AuditLog = {
-      ...log,
-      id: uuidv4(),
-      timestamp: new Date().toISOString()
-    };
-    setAuditLogs(prev => [newLog, ...prev]);
-  };
-
-  const addAssignment = async (assignment: Omit<Assignment, 'id' | 'assignmentCode'>) => {
-    const newAssignment: Assignment = {
-      ...assignment,
-      id: uuidv4(),
-      assignmentCode: generateAssignmentCode()
-    };
-    setAssignments(prev => [...prev, newAssignment]);
-  };
-
-  const addRevenueType = async (revenueType: Omit<RevenueType, 'id' | 'code'>) => {
-    const newRevenueType: RevenueType = {
-      ...revenueType,
-      id: uuidv4(),
-      code: generateRevenueTypeCode()
-    };
-    setRevenueTypes(prev => [...prev, newRevenueType]);
+    const newLog = { ...log, id: uuidv4(), timestamp: new Date().toISOString() };
+    setAuditLogs(prev => [...prev, newLog]);
   };
 
   return (
@@ -534,12 +193,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setMMDAs,
       collectorPerformance,
       setCollectorPerformance,
-      addBusiness,
-      updateBusiness,
-      addCollection,
-      addAuditLog,
-      loading,
-      error,
       users,
       setUsers,
       reconciliationData,
@@ -548,16 +201,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setRevenueAnalytics,
       transactions,
       setTransactions,
+      addBusiness,
+      updateBusiness,
+      addCollection,
+      addAuditLog,
+      loading,
+      error
     }}>
       {children}
     </AppContext.Provider>
   );
 }
 
-export function useApp() {
+export const useApp = () => {
   const context = useContext(AppContext);
   if (context === undefined) {
     throw new Error('useApp must be used within an AppProvider');
   }
   return context;
-}
+};
