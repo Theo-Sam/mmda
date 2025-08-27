@@ -54,7 +54,7 @@ export default function Dashboard() {
           title: 'National Overview',
           subtitle: 'Monitor all MMDAs across Ghana',
           stats: [
-            { title: 'Total Revenue (National)', value: formatCurrency(dashboardStats.totalRevenue * 16), icon: DollarSign, color: 'green' as const },
+            { title: 'Total Revenue (National)', value: formatCurrency((dashboardStats?.totalRevenue || 0) * 16), icon: DollarSign, color: 'green' as const },
             { title: 'Registered MMDAs', value: '260', icon: Globe, color: 'blue' as const },
             { title: 'Total Users', value: '1,247', icon: Users, color: 'yellow' as const },
             { title: 'System Uptime', value: '99.8%', icon: Shield, color: 'red' as const },
@@ -90,6 +90,7 @@ export default function Dashboard() {
             { label: 'Validate Payments', href: '/collections', icon: CheckCircle, description: 'Review and approve payments', color: 'bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600' },
             { label: 'Add Users', href: '/users', icon: UserPlus, description: 'Add staff to your MMDA', color: 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600' },
             { label: 'View Reports', href: '/reports', icon: BarChart3, description: 'Generate district reports', color: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600' },
+            { label: 'Collector Performance', href: '/collector-performance', icon: TrendingUp, description: 'Monitor collector efficiency and metrics', color: 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600' },
           ]
         };
       }
@@ -119,6 +120,7 @@ export default function Dashboard() {
             { label: 'Collections Overview', href: '/collections', icon: Target, description: 'View collection metrics', color: 'bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600' },
             { label: 'Export Records', href: '/exports', icon: Database, description: 'Export financial data', color: 'bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600' },
             { label: 'Manage Revenue Types', href: '/revenue-types', icon: CreditCard, description: 'Configure fee structures', color: 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600' },
+            { label: 'Collector Performance', href: '/collector-performance', icon: TrendingUp, description: 'Monitor collector efficiency and metrics', color: 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600' },
           ]
         };
       }
@@ -136,14 +138,11 @@ export default function Dashboard() {
         );
         const monthlyRevenue = monthlyCollections.reduce((sum, c) => sum + c.amount, 0);
 
-        // Assume 10% growth from previous month for demo
-        const growthRate = 10;
-
         return {
           title: 'Collection Dashboard',
           subtitle: 'Manage your assigned collections',
           stats: [
-            { title: 'Today\'s Collections', value: formatCurrency(todayRevenue), icon: DollarSign, color: 'green' as const, change: growthRate },
+            { title: 'Today\'s Collections', value: formatCurrency(todayRevenue), icon: DollarSign, color: 'green' as const },
             { title: 'Monthly Revenue', value: formatCurrency(monthlyRevenue), icon: Receipt, color: 'blue' as const },
             { title: 'Assigned Businesses', value: '23', icon: Building2, color: 'yellow' as const },
             { title: 'Collection Rate', value: '87%', icon: TrendingUp, color: 'red' as const },
@@ -228,12 +227,11 @@ export default function Dashboard() {
 
       case 'regional_admin': {
         // Mock data for regional dashboard
-        const region = user.region || 'Unknown Region';
+        const region = 'Greater Accra'; // Default region
         const totalMMDAs = 20;
         const totalRevenue = 3500000;
         const totalBusinesses = 4200;
         const activeMMDAAdmins = 18;
-        const monthlyGrowth = 8.2;
         const topMMDAs = [
           { name: 'Accra Metropolitan', revenue: 1200000, growth: 10.5, businesses: 1200 },
           { name: 'Tema Municipal', revenue: 900000, growth: 8.2, businesses: 900 },
@@ -243,10 +241,10 @@ export default function Dashboard() {
           title: `${region} - Regional Dashboard`,
           subtitle: `Monitor all MMDAs in ${region}`,
           stats: [
-            { title: 'Total Regional Revenue', value: formatCurrency(totalRevenue), icon: DollarSign, color: 'green', change: monthlyGrowth },
-            { title: 'MMDAs in Region', value: totalMMDAs, icon: Globe, color: 'blue' },
-            { title: 'Total Businesses', value: totalBusinesses, icon: Building2, color: 'yellow' },
-            { title: 'Active MMDA Admins', value: activeMMDAAdmins, icon: Users, color: 'red' },
+            { title: 'Total Regional Revenue', value: formatCurrency(totalRevenue), icon: DollarSign, color: 'green' as const },
+            { title: 'MMDAs in Region', value: totalMMDAs, icon: Globe, color: 'blue' as const },
+            { title: 'Total Businesses', value: totalBusinesses, icon: Building2, color: 'yellow' as const },
+            { title: 'Active MMDA Admins', value: activeMMDAAdmins, icon: Users, color: 'red' as const },
           ],
           quickActions: [
             { label: 'Manage MMDAs', href: '/regional-users', icon: Globe, description: 'Manage MMDAs in your region', color: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600' },
@@ -493,7 +491,7 @@ export default function Dashboard() {
           <div className="flex items-center space-x-4 mt-2">
             <span className="text-sm text-gray-500 dark:text-gray-400">Welcome back, {user?.name}</span>
             <span className="text-sm text-gray-400 dark:text-gray-500">•</span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">{user?.region}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{user?.district}</span>
           </div>
         </div>
         <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
@@ -515,7 +513,6 @@ export default function Dashboard() {
             title={stat.title}
             value={stat.value}
             icon={stat.icon}
-            change={index === 0 ? stat.change : undefined}
             color={stat.color}
           />
         ))}
@@ -624,55 +621,55 @@ export default function Dashboard() {
         </div>
         <div className="p-6">
           <div className="space-y-4">
-                         {user?.role === 'regional_admin' && dashboardContent.alerts ? (
-               dashboardContent.alerts.map((alert, index) => (
-                 <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)} relative`}>
-                   {alert.type === 'critical' && (
-                     <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg">
-                       URGENT
-                     </div>
-                   )}
-                   {getAlertIcon(alert.type)}
-                   <div className="flex-1">
-                     <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
-                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
-                     <div className="flex items-center justify-between mt-2">
-                       <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
-                       <Link
-                         to={alert.href}
-                         className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-                       >
-                         {alert.action} →
-                       </Link>
-                     </div>
-                   </div>
-                 </div>
-               ))
-             ) : (
-               alerts.map((alert, index) => (
-                 <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)} relative`}>
-                   {alert.type === 'critical' && (
-                     <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg">
-                       URGENT
-                     </div>
-                   )}
-                   {getAlertIcon(alert.type)}
-                   <div className="flex-1">
-                     <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
-                     <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
-                     <div className="flex items-center justify-between mt-2">
-                       <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
-                       <Link
-                         to={alert.href}
-                         className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-                       >
-                         {alert.action} →
-                       </Link>
-                     </div>
-                   </div>
-                 </div>
-               ))
-             )}
+            {user?.role === 'regional_admin' && dashboardContent.alerts ? (
+              dashboardContent.alerts.map((alert, index) => (
+                <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)} relative`}>
+                  {alert.type === 'critical' && (
+                    <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg">
+                      URGENT
+                    </div>
+                  )}
+                  {getAlertIcon(alert.type)}
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
+                      <Link
+                        to={alert.href}
+                        className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+                      >
+                        {alert.action} →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              alerts.map((alert, index) => (
+                <div key={index} className={`flex items-start space-x-3 p-3 rounded-lg border ${getAlertStyle(alert.type)} relative`}>
+                  {alert.type === 'critical' && (
+                    <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg">
+                      URGENT
+                    </div>
+                  )}
+                  {getAlertIcon(alert.type)}
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{alert.message}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{alert.details}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{alert.time}</p>
+                      <Link
+                        to={alert.href}
+                        className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+                      >
+                        {alert.action} →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

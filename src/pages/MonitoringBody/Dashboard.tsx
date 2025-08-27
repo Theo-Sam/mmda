@@ -234,6 +234,26 @@ export default function MonitoringBodyDashboard() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
+            to="/compliance-audit"
+            className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-200 hover:border-red-300 dark:hover:border-red-700"
+          >
+            <div className="flex items-start space-x-4">
+              <div className="p-3 rounded-lg bg-red-600 dark:bg-red-700 text-white">
+                <Shield className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                  Compliance & Audit
+                </h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Monitor MMDA compliance
+                </p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
+            </div>
+          </Link>
+
+          <Link
             to="/mmda-reports"
             className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-700"
           >

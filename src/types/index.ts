@@ -135,3 +135,6 @@ export interface Transaction {
   deviceInfo: string;
   district: string;
 }
+
+// Export compliance types
+export * from './Compliance';

@@ -39,6 +39,10 @@ import AuditorReportsCenter from './pages/Auditor/ReportsCenter';
 // Monitoring Body Pages
 import MonitoringBodyDashboard from './pages/MonitoringBody/Dashboard';
 import MMDAReports from './pages/MonitoringBody/MMDAReports';
+import ComplianceAuditTrackingPage from './pages/MonitoringBody/ComplianceAuditTracking';
+import EnhancedMonitoringDashboard from './pages/MonitoringBody/EnhancedMonitoringDashboard';
+import PredictiveAnalyticsDashboard from './pages/MonitoringBody/PredictiveAnalyticsDashboard';
+import InterventionPlanningDashboard from './pages/MonitoringBody/InterventionPlanningDashboard';
 
 // MMDA Admin Pages
 import MMDACollectorAssignments from './pages/MMDA/CollectorAssignments';
@@ -183,6 +187,58 @@ function AppRoutes() {
             <RoleBasedRoute permission="view_all_mmdas">
               <Layout>
                 <MMDAReports />
+              </Layout>
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/compliance-audit"
+        element={
+          <PrivateRoute>
+            <RoleBasedRoute permission="view_all_mmdas">
+              <Layout>
+                <ComplianceAuditTrackingPage />
+              </Layout>
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/enhanced-monitoring"
+        element={
+          <PrivateRoute>
+            <RoleBasedRoute permission="view_all_mmdas">
+              <Layout>
+                <EnhancedMonitoringDashboard />
+              </Layout>
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/predictive-analytics"
+        element={
+          <PrivateRoute>
+            <RoleBasedRoute permission="view_all_mmdas">
+              <Layout>
+                <PredictiveAnalyticsDashboard />
+              </Layout>
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/intervention-planning"
+        element={
+          <PrivateRoute>
+            <RoleBasedRoute permission="view_all_mmdas">
+              <Layout>
+                <InterventionPlanningDashboard />
               </Layout>
             </RoleBasedRoute>
           </PrivateRoute>

@@ -16,9 +16,15 @@ import {
   FileText,
   AlertTriangle,
   CheckCircle,
-  Target
+  Target,
+  BarChart,
+  PieChart,
+  Activity,
+  Globe,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart as RechartsPieChart, Pie, Cell, Legend } from 'recharts';
 import { ghanaRegions, mmdaByRegion } from '../../utils/ghanaRegions';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -40,11 +46,12 @@ interface MMDAData {
 }
 
 export default function MMDAReports() {
-  const { mmdas, loading, error } = useApp();
+  const { mmdas, nationalRevenueOversight, regionalOversightData, loading, error } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRegion, setFilterRegion] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedMMDA, setSelectedMMDA] = useState<MMDAData | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState('this-year');
   const { theme } = useTheme();
   const { user } = useAuth();
 
@@ -89,6 +96,34 @@ export default function MMDAReports() {
     alert(`Exporting MMDA data as ${format.toUpperCase()}...`);
   };
 
+  // Calculate oversight metrics
+  const currentMonthData = nationalRevenueOversight[nationalRevenueOversight.length - 1];
+  const previousMonthData = nationalRevenueOversight[nationalRevenueOversight.length - 2];
+  
+  const totalAnnualRevenue = nationalRevenueOversight.reduce((sum, month) => sum + month.actual, 0);
+  const totalAnnualTarget = nationalRevenueOversight.reduce((sum, month) => sum + month.target, 0);
+  const annualAchievement = (totalAnnualRevenue / totalAnnualTarget) * 100;
+  
+  const monthlyGrowth = previousMonthData ? 
+    ((currentMonthData.actual - previousMonthData.actual) / previousMonthData.actual) * 100 : 0;
+  
+  const mmdasBelowTarget = currentMonthData?.mmdasBelowTarget || 0;
+  const mmdasOnTarget = currentMonthData?.mmdasOnTarget || 0;
+  
+  const getPerformanceColor = (achievement: number) => {
+    if (achievement >= 110) return 'text-green-600 dark:text-green-400';
+    if (achievement >= 100) return 'text-blue-600 dark:text-blue-400';
+    if (achievement >= 90) return 'text-yellow-600 dark:text-yellow-400';
+    return 'text-red-600 dark:text-red-400';
+  };
+
+  const getPerformanceIcon = (achievement: number) => {
+    if (achievement >= 110) return <ArrowUp className="w-4 h-4 text-green-600 dark:text-green-400" />;
+    if (achievement >= 100) return <CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+    if (achievement >= 90) return <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+    return <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400" />;
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -115,6 +150,46 @@ export default function MMDAReports() {
         </div>
       </div>
 
+      {/* Executive Summary */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100">MMDA Revenue Oversight Summary</h3>
+            <p className="text-blue-700 dark:text-blue-300">National performance overview for {new Date().getFullYear()}</p>
+          </div>
+          <div className="p-3 bg-blue-100 dark:bg-blue-800 rounded-lg">
+            <Globe className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+              {annualAchievement.toFixed(1)}%
+            </p>
+            <p className="text-sm text-blue-700 dark:text-blue-300">Annual Target Achievement</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+              {formatCurrency(totalAnnualRevenue)}
+            </p>
+            <p className="text-sm text-green-700 dark:text-green-300">Total Revenue Collected</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+              {mmdasOnTarget}/{mmdas.length}
+            </p>
+            <p className="text-sm text-purple-700 dark:text-purple-300">MMDAs Meeting Targets</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+              {monthlyGrowth.toFixed(1)}%
+            </p>
+            <p className="text-sm text-orange-700 dark:text-orange-300">Monthly Growth Rate</p>
+          </div>
+        </div>
+      </div>
+
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -135,9 +210,12 @@ export default function MMDAReports() {
               <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Annual Revenue</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">
-                {formatCurrency(mmdas.reduce((sum, mmda) => sum + mmda.revenue, 0))}
+                {formatCurrency(totalAnnualRevenue)}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Target: {formatCurrency(totalAnnualTarget)}
               </p>
             </div>
           </div>
@@ -146,12 +224,15 @@ export default function MMDAReports() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-              <Shield className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+              <Target className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Compliance</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Target Achievement</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">
-                {(mmdas.reduce((sum, mmda) => sum + mmda.compliance, 0) / mmdas.length).toFixed(1)}%
+                {annualAchievement.toFixed(1)}%
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {mmdasBelowTarget} MMDAs below target
               </p>
             </div>
           </div>
@@ -163,28 +244,117 @@ export default function MMDAReports() {
               <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Growth</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Growth</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white">
-                {(mmdas.reduce((sum, mmda) => sum + mmda.growth, 0) / mmdas.length).toFixed(1)}%
+                {monthlyGrowth.toFixed(1)}%
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                vs previous month
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Revenue Comparison Chart */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">National Revenue vs Target</h3>
+      {/* National Revenue vs Target Monitoring */}
+      <div className="space-y-6">
+        {/* Header with Period Selector */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">National Revenue vs Target Monitoring</h3>
+            <p className="text-gray-600 dark:text-gray-400">Comprehensive oversight of MMDA revenue performance across Ghana</p>
+          </div>
+          <div className="flex items-center space-x-3">
+            <select
+              value={selectedPeriod}
+              onChange={(e) => setSelectedPeriod(e.target.value)}
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
+            >
+              <option value="this-year">This Year</option>
+              <option value="last-year">Last Year</option>
+              <option value="custom">Custom Range</option>
+            </select>
           <button
             onClick={() => exportData('excel')}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600"
           >
-            Export Chart Data
+              <Download className="w-4 h-4" />
+              <span>Export Data</span>
           </button>
         </div>
+        </div>
+
+        {/* Key Performance Indicators */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Current Month Achievement</p>
+                <p className={`text-2xl font-bold ${getPerformanceColor(currentMonthData?.achievement || 0)}`}>
+                  {currentMonthData?.achievement?.toFixed(1)}%
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {formatCurrency(currentMonthData?.actual || 0)} / {formatCurrency(currentMonthData?.target || 0)}
+                </p>
+              </div>
+              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                {getPerformanceIcon(currentMonthData?.achievement || 0)}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">MMDAs Performance</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {mmdasOnTarget}/{mmdas.length}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {mmdasBelowTarget} below target
+                </p>
+              </div>
+              <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Variance</p>
+                <p className={`text-2xl font-bold ${currentMonthData?.variance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {currentMonthData?.variance >= 0 ? '+' : ''}{formatCurrency(currentMonthData?.variance || 0)}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  vs target
+                </p>
+              </div>
+              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <Activity className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Revenue vs Target Chart */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Monthly Revenue Performance</h4>
+            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <span>Actual Revenue</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <span>Target</span>
+              </div>
+            </div>
+        </div>
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={[]}>
+            <LineChart data={nationalRevenueOversight}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
             <XAxis
               dataKey="month"
@@ -197,17 +367,271 @@ export default function MMDAReports() {
               axisLine={{ stroke: theme === 'dark' ? '#374151' : '#E5E7EB' }}
             />
             <Tooltip
-              formatter={(value) => [formatCurrency(value as number), '']}
+                formatter={(value, name) => [
+                  formatCurrency(value as number), 
+                  name === 'actual' ? 'Actual Revenue' : 'Target'
+                ]}
+                labelFormatter={(label) => `${label} 2024`}
               contentStyle={{
                 backgroundColor: theme === 'dark' ? '#1F2937' : '#FFFFFF',
                 borderColor: theme === 'dark' ? '#374151' : '#E5E7EB',
                 color: theme === 'dark' ? '#F9FAFB' : '#111827'
               }}
             />
-            <Line type="monotone" dataKey="target" stroke={theme === 'dark' ? '#94A3B8' : '#94A3B8'} strokeDasharray="5 5" name="Target" />
-            <Line type="monotone" dataKey="actual" stroke={theme === 'dark' ? '#60A5FA' : '#3B82F6'} strokeWidth={3} name="Actual" />
+              <Line 
+                type="monotone" 
+                dataKey="target" 
+                stroke={theme === 'dark' ? '#94A3B8' : '#94A3B8'} 
+                strokeDasharray="5 5" 
+                name="Target"
+                strokeWidth={2}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="actual" 
+                stroke={theme === 'dark' ? '#60A5FA' : '#3B82F6'} 
+                strokeWidth={3} 
+                name="Actual Revenue"
+                dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
+              />
           </LineChart>
         </ResponsiveContainer>
+        </div>
+
+        {/* Regional Performance Overview */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Regional Performance Overview</h4>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Target achievement by region
+            </div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ResponsiveContainer width="100%" height={300}>
+              <RechartsBarChart data={regionalOversightData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" />
+                <XAxis 
+                  dataKey="region" 
+                  tick={{ fill: theme === 'dark' ? '#9CA3AF' : '#4B5563' }}
+                  axisLine={{ stroke: theme === 'dark' ? '#374151' : '#E5E7EB' }}
+                />
+                <YAxis 
+                  tickFormatter={(value) => `${value}%`}
+                  tick={{ fill: theme === 'dark' ? '#9CA3AF' : '#4B5563' }}
+                  axisLine={{ stroke: theme === 'dark' ? '#374151' : '#E5E7EB' }}
+                />
+                <Tooltip
+                  formatter={(value, name) => [
+                    `${value}%`, 
+                    name === 'achievement' ? 'Target Achievement' : 'Compliance Rate'
+                  ]}
+                  contentStyle={{
+                    backgroundColor: theme === 'dark' ? '#1F2937' : '#FFFFFF',
+                    borderColor: theme === 'dark' ? '#374151' : '#E5E7EB',
+                    color: theme === 'dark' ? '#F9FAFB' : '#111827'
+                  }}
+                />
+                <Bar 
+                  dataKey="achievement" 
+                  fill={theme === 'dark' ? '#60A5FA' : '#3B82F6'} 
+                  radius={[4, 4, 0, 0]}
+                />
+              </RechartsBarChart>
+            </ResponsiveContainer>
+            
+            <div className="space-y-4">
+              <h5 className="font-medium text-gray-900 dark:text-white">Top Performing Regions</h5>
+              {regionalOversightData
+                .sort((a, b) => b.achievement - a.achievement)
+                .slice(0, 5)
+                .map((region, index) => (
+                  <div key={region.region} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                        index === 0 ? 'bg-yellow-500 text-white' :
+                        index === 1 ? 'bg-gray-400 text-white' :
+                        index === 2 ? 'bg-orange-500 text-white' : 'bg-gray-300 text-gray-700'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">{region.region}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{region.mmdas} MMDAs</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className={`font-bold ${getPerformanceColor(region.achievement)}`}>
+                        {region.achievement.toFixed(1)}%
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {formatCurrency(region.revenue)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Performance Alerts & Insights */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Performance Alerts & Insights</h4>
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            {mmdasBelowTarget} MMDAs need attention
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Alert Summary */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+              <div>
+                <p className="font-medium text-yellow-800 dark:text-yellow-200">Performance Alert</p>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  {mmdasBelowTarget} MMDAs are below their revenue targets this month
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <div>
+                <p className="font-medium text-blue-800 dark:text-blue-200">Growth Trend</p>
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  National revenue grew by {monthlyGrowth.toFixed(1)}% compared to last month
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <div>
+                <p className="font-medium text-green-800 dark:text-green-200">Target Achievement</p>
+                <p className="text-sm text-green-700 dark:text-green-300">
+                  {mmdasOnTarget} MMDAs are meeting or exceeding their targets
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="space-y-4">
+            <h5 className="font-medium text-gray-900 dark:text-white">Quick Actions</h5>
+            <div className="grid grid-cols-1 gap-3">
+              <button className="flex items-center justify-between p-3 text-left bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                <div className="flex items-center space-x-3">
+                  <Eye className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <span className="font-medium text-gray-900 dark:text-white">View Detailed Reports</span>
+                </div>
+                <ArrowUp className="w-4 h-4 text-gray-400" />
+              </button>
+              
+              <button className="flex items-center justify-between p-3 text-left bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                <div className="flex items-center space-x-3">
+                  <Download className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <span className="font-medium text-gray-900 dark:text-white">Export Performance Data</span>
+                </div>
+                <ArrowUp className="w-4 h-4 text-gray-400" />
+              </button>
+              
+              <button className="flex items-center justify-between p-3 text-left bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                <div className="flex items-center space-x-3">
+                  <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                  <span className="font-medium text-gray-900 dark:text-white">Review Underperforming MMDAs</span>
+                </div>
+                <ArrowUp className="w-4 h-4 text-gray-400" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Monthly Performance Breakdown */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Monthly Performance Breakdown</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Detailed monthly revenue vs target analysis</p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Month
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Target
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Actual Revenue
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Variance
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Achievement %
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  MMDAs on Target
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {nationalRevenueOversight.map((month) => (
+                <tr key={month.month} className="hover:bg-gray-50 dark:hover:bg-gray-750">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">{month.month} 2024</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900 dark:text-white">
+                      {formatCurrency(month.target)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      {formatCurrency(month.actual)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className={`text-sm font-medium ${
+                      month.variance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                    }`}>
+                      {month.variance >= 0 ? '+' : ''}{formatCurrency(month.variance)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className={`text-sm font-medium ${getPerformanceColor(month.achievement)}`}>
+                      {month.achievement.toFixed(1)}%
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900 dark:text-white">
+                      {month.mmdasOnTarget}/{mmdas.length}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      month.achievement >= 110 ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                      month.achievement >= 100 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
+                      month.achievement >= 90 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                      'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
+                    }`}>
+                      {month.achievement >= 110 ? 'Excellent' :
+                       month.achievement >= 100 ? 'Good' :
+                       month.achievement >= 90 ? 'Average' : 'Poor'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Filters */}
@@ -255,6 +679,10 @@ export default function MMDAReports() {
 
       {/* MMDA Performance Table */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Individual MMDA Performance</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Detailed performance metrics for each MMDA</p>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700">

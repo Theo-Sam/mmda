@@ -51,6 +51,7 @@ const superAdminNavItems: NavItem[] = [
   { path: '/system-users', label: 'User Management', icon: Users, permission: 'manage_users' },
   { path: '/districts', label: 'MMDA Management', icon: Globe, permission: 'view_all_mmdas' },
   { path: '/system-monitoring', label: 'System Monitoring', icon: Eye, permission: 'view_all_mmdas' },
+  { path: '/collector-performance', label: 'Collector Performance', icon: TrendingUp, permission: 'view_collector_performance' },
 ];
 
 // Regional Admin navigation
@@ -59,6 +60,7 @@ const regionalAdminNavItems: NavItem[] = [
   { path: '/regional-users', label: 'User Management', icon: Users, permission: 'manage_users' },
   { path: '/districts', label: 'MMDA Management', icon: Globe, permission: 'view_all_mmdas' },
   { path: '/region-report-center', label: 'Region Report Center', icon: BarChart3, permission: 'view_reports' },
+  { path: '/collector-performance', label: 'Collector Performance', icon: TrendingUp, permission: 'view_collector_performance' },
 ];
 
 // Business Registration Officer navigation
@@ -74,6 +76,7 @@ const mmdaAdminNavItems: NavItem[] = [
   { path: '/assignments', label: 'Collector Assignments', icon: UserCheck, permission: ['view_assignments', 'assign_collector'] },
   { path: '/mmda-users', label: 'MMDA User Management', icon: Users, permission: ['manage_users', 'view_users'] },
   { path: '/collections', label: 'Collections Overview', icon: Receipt, permission: ['view_collections', 'validate_payment'] },
+  { path: '/collector-performance', label: 'Collector Performance', icon: TrendingUp, permission: 'view_collector_performance' },
 ];
 
 // Finance Officer navigation
@@ -84,6 +87,7 @@ const financeNavItems: NavItem[] = [
   { path: '/reconciliation', label: 'Reconciliation', icon: Calculator, permission: 'view_collections' },
   { path: '/revenue-analysis', label: 'Revenue Analysis', icon: TrendingUp, permission: 'view_reports' },
   { path: '/exports', label: 'Data Export', icon: Download, permission: 'export_reports' },
+  { path: '/collector-performance', label: 'Collector Performance', icon: TrendingUp, permission: 'view_collector_performance' },
 ];
 
 // Collector navigation
@@ -113,6 +117,9 @@ const auditorNavItems: NavItem[] = [
 const monitoringBodyNavItems: NavItem[] = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: 'view_dashboard' },
   { path: '/mmda-reports', label: 'MMDA Oversight', icon: BarChart3, permission: 'view_all_mmdas' },
+  { path: '/enhanced-monitoring', label: 'Enhanced Monitoring', icon: Activity, permission: 'view_all_mmdas' },
+  { path: '/predictive-analytics', label: 'Predictive Analytics', icon: TrendingUp, permission: 'view_all_mmdas' },
+  { path: '/intervention-planning', label: 'Intervention Planning', icon: Target, permission: 'view_all_mmdas' },
 ];
 
 export default function Sidebar() {
